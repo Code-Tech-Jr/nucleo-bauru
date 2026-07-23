@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --font-sans: var(--font-open-sans);
+}
+
+@theme {
+  --color-background: #ffffff;
+  --color-blue: #1f3160;
+  --color-blue-light: #285dbc;
+  --color-orange: #ed551a;
+
+  --color-foreground: var(--color-blue);
+
+  --text-btn: clamp(16px, 15.33px + 0.21vw, 18px);
+  --text-body: 18px;
+
+  --gradient-brand: linear-gradient(
+    90deg,
+    var(--color-blue) 0%,
+    var(--color-blue-light) 51%,
+    var(--color-orange) 100%
+  );
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}

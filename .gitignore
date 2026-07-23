@@ -28,6 +28,10 @@ yarn-error.log*
 .env*.local
 .env
 
+# vscode (mantém settings.json compartilhado, ignora config pessoal)
+.vscode/*
+!.vscode/settings.json
+
 # vercel
 .vercel
 
