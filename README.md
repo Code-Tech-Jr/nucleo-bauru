@@ -1,6 +1,6 @@
 # Núcleo Bauru
 
-Site institucional do **Núcleo Bauru**, núcleo regional do Movimento Empresa Júnior (MEJ) no Oeste Paulista. Projeto da [Code Tech Jr](https://www.instagram.com/codetech.jr).
+Site institucional do **Núcleo Bauru**, núcleo regional do Movimento Empresa Júnior (MEJ) no Oeste Paulista.
 
 ## Stack
 
