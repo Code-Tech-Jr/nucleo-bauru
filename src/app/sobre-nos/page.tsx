@@ -1,3 +1,140 @@
+// app/sobre-nos/page.tsx
+import Image from 'next/image'
+import Container from '@/components/ui/Container'
+import Content from '@/components/ui/Content'
+import Heading from '@/components/ui/Heading'
+import Text from '@/components/ui/Text'
+import Timeline from '@/components/sections/Timeline'
+
 export default function SobreNos() {
-  return <>SOBRE NOS</>
+  return (
+    <main>
+      {/* Banner */}
+      <Container
+        as="section"
+        className="h-[220px]"
+        style={{ background: 'var(--gradient-brand)' }}
+      >
+        <Content>
+          <Heading variant="hero" className="text-3xl sm:text-4xl">
+            Sobre o Núcleo
+          </Heading>
+        </Content>
+      </Container>
+
+      {/* Quem Somos */}
+      <Container as="section" className="flex-col gap-10 py-12">
+        <Content className="flex-col gap-10">
+          <Heading variant="section">Quem Somos?</Heading>
+
+          {/* Bloco 1: fundação (2006-2015) + galera */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-center md:gap-10">
+            <Text variant="dark">
+              A história do Núcleo Bauru tem início na construção do NEJunesp, criado em
+              2006, em Araraquara, com o propósito de integrar as Empresas Juniores da
+              Unesp e fortalecer o Movimento Empresa Júnior dentro da universidade. Com o
+              crescimento da rede e o aumento do número de EJs distribuídas por diferentes
+              campi, surgiu a necessidade de aproximar o suporte às empresas e tornar a
+              atuação mais estratégica. Em 2015, a organização passou por uma renovação de
+              identidade, adotando o nome Núcleo UNESP, refletindo uma estrutura mais
+              consolidada e preparada para expandir sua atuação.
+            </Text>
+
+            <div className="relative h-[220px] w-full overflow-hidden rounded-xl md:h-[320px]">
+              <Image
+                src="/images/galera.svg"
+                alt="Membros do Núcleo Bauru reunidos"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Bloco 2: regionalização (2018-2020) + turma */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-center md:gap-10">
+            <div className="relative h-[220px] w-full overflow-hidden rounded-xl md:h-[320px]">
+              <Image
+                src="/images/turma.svg"
+                alt="Turma do Núcleo Bauru em evento"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <Text variant="dark">
+              Esse crescimento culminou, em 2018, na regionalização dos núcleos,
+              descentralizando a gestão e aproximando ainda mais o acompanhamento das
+              Empresas Juniores. Foi nesse contexto que nasceu o Núcleo Bauru, reunindo as
+              EJs da região para promover desenvolvimento, integração e resultados cada
+              vez mais consistentes. Em 2020, o Núcleo passou por uma nova reformulação de
+              identidade visual e posicionamento, dando origem ao Núcleo Bauru como é
+              conhecido atualmente: uma rede colaborativa que conecta pessoas e empresas
+              em torno de um mesmo propósito, impulsionando o protagonismo do interior
+              paulista e fortalecendo o ecossistema do MEJ na região.
+            </Text>
+          </div>
+
+          {/* Linha do tempo */}
+          <Timeline />
+
+          {/* Movimento Empresa Júnior */}
+          <div className="flex flex-col gap-6">
+            <Heading variant="section">Movimento Empresa Júnior (MEJ)</Heading>
+
+            <Text>
+              Empresa júnior (EJ) é uma empresa constituída exclusivamente por alunos de
+              graduação de instituições de ensino superior, organizados em uma associação
+              civil, com o intuito de desenvolver projetos e consultorias para empresas,
+              entidades e sociedade em geral, nas suas áreas de atuação, sob a supervisão
+              de professores e profissionais especializados.
+            </Text>
+
+            <Text>
+              As empresas juniores possuem gestão autônoma em relação à universidade ou
+              qualquer entidade acadêmica. A renda obtida com os serviços e projetos
+              prestados pela empresa deve ser investida na própria instituição, sem a
+              captação de recursos financeiros para seus membros.
+            </Text>
+          </div>
+
+          {/* Histórico do Movimento */}
+          <div className="flex flex-col gap-6">
+            <Heading variant="section">Histórico do Movimento</Heading>
+
+            <Text>
+              O surgimento da 1ª Empresa Júnior se deu na França em 1967, quando alunos da
+              ESSEC-LÉcole Supérieure des Sciences Economiques et Commerciales, em Paris,
+              sentiram a necessidade de um maior contato com o mercado e colocar em
+              prática o conhecimento acadêmico. Assim, foi fundada a Júnior ESSEC Conseli,
+              a primeira EJ do mundo. A partir daí o movimento se difundiu e pode ser
+              considerado um fenômeno econômico empresarial.
+            </Text>
+
+            <Text>
+              Em 1986 ocorreu o processo de internacionalização e, atualmente, existem
+              Empresas Juniores espalhadas por todo o mundo: Portugal, Espanha, Itália,
+              Inglaterra, Eslovênia, Suíça, Alemanha, entre outros. Hoje na Europa existe
+              uma associação européia de Empresas Juniores (JADE) e confederações
+              nacionais em todos os países.
+            </Text>
+
+            <Text>
+              No Brasil a primeira ocorrência foi em São Paulo, surgiram as empresas da
+              FGV (Fundação Getúlio Vargas) e da FAAP (Fundação Armando Álvares Penteado).
+              A idéia foi introduzida pela câmara de comércio França-Brasil em 1988. Em
+              1992 é criada a FEJESP - Federação das Empresas Juniores do Estado de São
+              Paulo, e em 2003 surge a Brasil Júnior, para representar as EJs confederadas
+              em todas as esferas, representando o MEJ no âmbito nacional.
+            </Text>
+
+            <Text>
+              Em 2016, é aprovada a Lei 13.264, que disciplina a criação e organização de
+              todas as EJs do Brasil. Hoje existem em torno de 350 Empresas Juniores por
+              todo o país, nas mais diversas áreas de atuação.
+            </Text>
+          </div>
+        </Content>
+      </Container>
+    </main>
+  )
 }
