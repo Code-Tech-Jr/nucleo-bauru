@@ -8,6 +8,7 @@ Site institucional do **Núcleo Bauru**, núcleo regional do Movimento Empresa J
 - [Tailwind CSS v4](https://tailwindcss.com) (config via `@theme` em `globals.css`, sem `tailwind.config.js`)
 - [class-variance-authority](https://cva.style) para variantes de componentes
 - [Leaflet](https://leafletjs.com) / react-leaflet para o mapa interativo das EJs
+- [react-icons](https://react-icons.github.io/react-icons) para ícones (redes sociais, contato, localização) — importados como componentes, ex.: `import { FaInstagram } from 'react-icons/fa6'`
 - ESLint + Prettier (com `prettier-plugin-tailwindcss`) + Husky/lint-staged
 
 ## Como rodar
@@ -35,7 +36,8 @@ Todo `git commit` já roda lint + format automaticamente nos arquivos alterados 
 ## Estrutura de pastas
 
 ```text
-info/                  # mockups de design originais (PDF/SVG) — fonte de verdade de cores/tipografia/layout
+data/                  # dados estáticos versionados no repo (ver seção "Mapa interativo" abaixo)
+  municipios-nucleo-bauru.json  # allowlist dos municípios que formam a região do Núcleo
 public/                # assets estáticos servidos direto (imagens, ícones)
 src/
   app/                 # rotas (Next.js App Router) — cada pasta = uma rota, page.tsx = a tela
@@ -55,6 +57,46 @@ src/
 ```
 
 Pastas vazias têm um `.gitkeep` só pra existirem no git — pode apagar o `.gitkeep` assim que colocar o primeiro arquivo real ali dentro.
+
+## Mapa interativo (seção "Nossa Rede")
+
+O mapa (`src/components/sections/nossa-rede/map/Map.tsx`) desenha, em Leaflet, só os municípios que formam a região do Núcleo Bauru, coloridos conforme tenham ou não uma EJ ativa. Ele é montado só no client (`ssr: false`, via `dynamic` no `NossaRede.tsx`) porque o Leaflet depende de `window`.
+
+### A pasta `data/`
+
+`data/municipios-nucleo-bauru.json` é a **allowlist da região** — um array de `{ nome, codigo_ibge }` com os municípios que pertencem ao Núcleo (hoje 237). Ele existe porque a malha oficial do IBGE traz **São Paulo inteiro** (645 municípios); esse arquivo é o filtro que recorta só a nossa região e ainda define o **nome de exibição** de cada cidade (o `nome` daqui, não o da malha do IBGE).
+
+Cada entrada tem só dois campos:
+
+| Campo         | O que é                                                                |
+| ------------- | ---------------------------------------------------------------------- |
+| `nome`        | nome exibido no mapa (tooltip no hover) e usado pra cruzar com a busca |
+| `codigo_ibge` | código IBGE de 7 dígitos do município — a chave que casa com a malha   |
+
+### Como o mapa é montado (fluxo de dados)
+
+1. **Server** (`src/lib/getMalhaNucleoBauru.ts`): busca a malha de SP na API do IBGE (`/malhas/estados/35`, cache de 1 dia) e, em paralelo, os EJs da planilha (`getEjsNucleoBauru`).
+2. Filtra as features da malha, mantendo só as cujo `codarea` está no `municipios-nucleo-bauru.json`.
+3. Em cada feature que sobra, injeta duas `properties`:
+   - `nome` — vem do JSON;
+   - `tem_ej` — `true` se existe uma **EJ ativa** naquela cidade (cruza `codigo_ibge` com o `codigoIbge` da planilha). **Não vem do JSON** — é sempre derivado da planilha.
+4. **Client** (`Map.tsx`) pinta cada município:
+   - **bege** (`#f5e6cf`) → sem EJ (`tem_ej: false`): não é clicável nem tem hover;
+   - **laranja** (`--color-orange`) → tem EJ, não selecionada;
+   - **azul** (`--color-blue`) → tem EJ e selecionada (via clique no mapa ou pela busca).
+
+Clicar num município com EJ vira um filtro de cidade (o mesmo chip da barra de busca), mantendo mapa e busca sincronizados.
+
+> A proporção do mapa (`aspectoDaMalha` em `NossaRede.tsx`) é calculada em Web Mercator **sem Leaflet**, direto das coordenadas do GeoJSON, pra rodar no SSR e reservar a altura correta antes do mapa montar (evita layout shift).
+
+### O que fazer quando uma cidade entra ou sai da região
+
+Mexer **só** no `data/municipios-nucleo-bauru.json`:
+
+- **Entrou** uma cidade na região → adicione `{ "nome": "...", "codigo_ibge": "..." }`. Pegue o código IBGE de 7 dígitos na [API de municípios do IBGE](https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios) (ou no site do IBGE). Confira que o `nome` está com acentuação correta — é ele que aparece no mapa e casa com a busca.
+- **Saiu** uma cidade → remova a entrada dela do JSON.
+
+Não precisa tocar em `Map.tsx` nem em `getMalhaNucleoBauru.ts`: o filtro é dirigido pelo JSON. E **não** edite o `tem_ej` — ele é recalculado sozinho a partir da planilha de EJs; pra uma cidade acender de laranja pra clicável basta ter uma EJ ativa cadastrada nela.
 
 ## Design tokens (`src/app/globals.css`)
 
