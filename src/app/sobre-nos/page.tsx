@@ -1,4 +1,3 @@
-// app/sobre-nos/page.tsx
 import Image from 'next/image'
 import Container from '@/components/ui/Container'
 import Content from '@/components/ui/Content'
@@ -40,7 +39,7 @@ export default function SobreNos() {
               consolidada e preparada para expandir sua atuação.
             </Text>
 
-            <div className="relative h-[220px] w-full overflow-hidden rounded-xl md:h-[320px]">
+            <div className="relative aspect-[1215/609] w-full overflow-hidden">
               <Image
                 src="/images/galera.svg"
                 alt="Membros do Núcleo Bauru reunidos"
@@ -52,7 +51,7 @@ export default function SobreNos() {
 
           {/* Bloco 2: regionalização (2018-2020) + turma */}
           <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-center md:gap-10">
-            <div className="relative h-[220px] w-full overflow-hidden rounded-xl md:h-[320px]">
+            <div className="relative aspect-[1215/609] w-full overflow-hidden">
               <Image
                 src="/images/turma.svg"
                 alt="Turma do Núcleo Bauru em evento"
