@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Open_Sans } from 'next/font/google'
 import './globals.css'
+import Footer from '@/components/layout/Footer'
 
 const openSans = Open_Sans({
   variable: '--font-open-sans',
@@ -20,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${openSans.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {/* flex-1 empurra o footer pro fim da viewport em páginas curtas */}
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
     </html>
   )
 }
