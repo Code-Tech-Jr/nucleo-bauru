@@ -72,15 +72,17 @@ function ColunaLinks({
     <div className="flex min-w-0 flex-col gap-4">
       <Heading variant={'section'}>{titulo}</Heading>
       {/* w-fit + mx-auto centraliza o bloco no mobile sem desalinhar as linhas entre si */}
-      <ul className="mx-auto flex w-fit flex-col gap-2 lg:mx-0">
-        {links.map(({ href, label }) => (
-          <li key={href}>
-            <Link href={href} className={`${LINK_CLASSES} font-semibold`}>
-              {label}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <nav aria-label={titulo} className="mx-auto w-fit lg:mx-0">
+        <ul className="flex flex-col gap-2">
+          {links.map(({ href, label }) => (
+            <li key={href}>
+              <Link href={href} className={`${LINK_CLASSES} font-semibold`}>
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   )
 }
