@@ -45,8 +45,8 @@ const MAPA_DO_SITE = [
   { href: '/', label: 'Início' },
   { href: '/sobre-nos', label: 'Sobre Nós' },
   { href: '/nossa-rede', label: 'Nossa Rede' },
-  { href: '/eventos-e-noticias', label: 'Eventos e Notícias' },
-  { href: '/parceiros', label: 'Parceiros' },
+  { href: '/#eventos-e-noticias', label: 'Eventos e Notícias' },
+  { href: '/#parceiros', label: 'Parceiros' },
 ]
 
 const INSTITUCIONAL = [
