@@ -70,7 +70,7 @@ function ColunaLinks({
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-4">
-      <Heading variant={'section'}>{titulo}</Heading>
+      <Heading variant="section">{titulo}</Heading>
       {/* w-fit + mx-auto centraliza o bloco no mobile sem desalinhar as linhas entre si */}
       <nav aria-label={titulo} className="mx-auto w-fit lg:mx-0">
         <ul className="flex flex-col gap-2">
@@ -102,7 +102,6 @@ export default function Footer() {
                 width={280}
                 height={291}
                 className="h-auto w-32 lg:w-36"
-                priority={false}
               />
             </Link>
 
@@ -129,7 +128,7 @@ export default function Footer() {
             <ColunaLinks titulo="Institucional" links={INSTITUCIONAL} />
 
             <div className="flex min-w-0 flex-col gap-4 sm:col-span-2 lg:col-span-1">
-              <Heading variant={'section'}>Contato</Heading>
+              <Heading variant="section">Contato</Heading>
               <ul className="mx-auto flex w-fit flex-col gap-3 lg:mx-0">
                 <li>
                   <a
