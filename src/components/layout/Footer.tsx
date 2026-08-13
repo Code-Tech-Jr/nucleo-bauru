@@ -161,7 +161,7 @@ export default function Footer() {
                   <span className={SLOT_ICONE}>
                     <FaLocationDot className="h-6 w-6 text-orange" />
                   </span>
-                  <span className="font-semibold">Bauru, SP</span>
+                  <address className="font-semibold not-italic">Bauru, SP</address>
                 </li>
               </ul>
             </div>
@@ -169,7 +169,7 @@ export default function Footer() {
         </div>
 
         <p className="w-full text-center text-sm text-white sm:text-base">
-          {new Date().getFullYear()} Núcleo Bauru. Todos os direitos reservados. MEJ -
+          © {new Date().getFullYear()} Núcleo Bauru. Todos os direitos reservados. MEJ -
           Movimento Empresa Júnior.
         </p>
       </Content>
