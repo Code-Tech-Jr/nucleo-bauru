@@ -1,0 +1,74 @@
+'use client'
+
+import { useEffect, useRef, type ReactNode } from 'react'
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from 'motion/react'
+import { Rocket } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+export default function StatCard({
+  valor,
+  sufixo = '',
+  rotulo,
+  icone,
+  className,
+}: {
+  valor: number
+  sufixo?: string
+  rotulo: string
+  icone?: ReactNode
+  className?: string
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const emVista = useInView(ref, { once: true })
+  const reduzirMovimento = useReducedMotion()
+
+  // MotionValue começa em 0 no servidor e no cliente — evita mismatch de hidratação.
+  const valorAnimado = useMotionValue(0)
+  const valorExibido = useTransform(valorAnimado, (v) => Math.round(v))
+
+  useEffect(() => {
+    if (!emVista) return
+
+    if (reduzirMovimento) {
+      valorAnimado.set(valor)
+      return
+    }
+
+    const controles = animate(valorAnimado, valor, {
+      duration: 1.5,
+      ease: 'easeOut',
+    })
+
+    return () => controles.stop()
+  }, [emVista, reduzirMovimento, valor, valorAnimado])
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-8 text-center shadow-[6px_6px_16px_rgba(31,49,96,0.25)]',
+        className
+      )}
+    >
+      <span className="flex items-center justify-center text-blue">
+        {icone ?? <Rocket className="size-8" strokeWidth={2} />}
+      </span>
+
+      <span className="text-8xl font-extrabold text-blue">
+        <motion.span>{valorExibido}</motion.span>
+        {sufixo}
+      </span>
+
+      <span className="text-sm font-bold tracking-wide text-blue/80 uppercase">
+        {rotulo}
+      </span>
+    </div>
+  )
+}

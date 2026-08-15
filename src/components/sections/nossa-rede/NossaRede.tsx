@@ -14,6 +14,7 @@ import {
 } from '@/lib/filtrarEjs'
 import FiltroEjs from './search/FiltroEjs'
 import ListaEjs from './search/ListaEjs'
+import NossaRedeStats from './stats/NossaRedeStats'
 import Content from '@/components/ui/Content'
 import Container from '@/components/ui/Container'
 import Heading from '@/components/ui/Heading'
@@ -85,6 +86,7 @@ export default function NossaRedeCliente({
     <Container>
       <Content className="flex-col items-stretch gap-8">
         <Heading variant={'section'}>NOSSA REDE</Heading>
+        <NossaRedeStats ejs={ejs} />
         <div className="flex flex-col gap-4">
           <Text variant={'dark'} className="text-justify">
             O Núcleo Bauru é formado por uma rede de Empresas Juniores da Unesp que
