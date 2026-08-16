@@ -46,7 +46,7 @@ export default function Header() {
         <ul className="hidden items-center gap-8 lg:flex">{links}</ul>
 
         <Button
-          href="/contato"
+          href={`mailto:${EMAIL}`}
           variant="solid"
           showArrow
           className="hidden lg:inline-flex"

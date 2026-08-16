@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Menu, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
+import { EMAIL } from '@/lib/site'
 
 export default function HeaderMobile({ links }: { links: ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -72,7 +73,7 @@ export default function HeaderMobile({ links }: { links: ReactNode }) {
           {links}
         </ul>
 
-        <Button href="/contato" variant="solid" showArrow className="self-start">
+        <Button href={`mailto:${EMAIL}`} variant="solid" showArrow className="self-start">
           Fale conosco
         </Button>
       </div>
