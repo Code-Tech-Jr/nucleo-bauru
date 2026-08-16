@@ -33,7 +33,7 @@ export const buttonVariants = cva(
       {
         variant: 'header',
         active: true,
-        class: 'lg:border-orange lg:pb-3',
+        class: 'border-orange lg:pb-3',
       },
     ],
     defaultVariants: {
