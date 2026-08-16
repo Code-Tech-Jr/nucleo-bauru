@@ -25,7 +25,7 @@ export default function StatCard({
   icone?: ReactNode
   className?: string
 }) {
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLLIElement>(null)
   const emVista = useInView(ref, { once: true })
   const reduzirMovimento = useReducedMotion()
 
@@ -51,7 +51,7 @@ export default function StatCard({
   }, [emVista, reduzirMovimento, valor, valorAnimado])
 
   return (
-    <div
+    <li
       ref={ref}
       className={cn(
         'flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-8 text-center shadow-[6px_6px_16px_rgba(31,49,96,0.25)]',
@@ -70,6 +70,6 @@ export default function StatCard({
       <span className="text-sm font-bold tracking-wide text-blue/80 uppercase">
         {rotulo}
       </span>
-    </div>
+    </li>
   )
 }

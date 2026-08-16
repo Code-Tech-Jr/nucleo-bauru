@@ -45,7 +45,7 @@ export default function NossaRedeStats({ ejs }: { ejs: Ej[] }) {
   }, [ejs])
 
   return (
-    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map(({ valor, sufixo, rotulo }) => (
         <StatCard
           key={rotulo}
@@ -55,6 +55,6 @@ export default function NossaRedeStats({ ejs }: { ejs: Ej[] }) {
           icone={ICONE_FOGUETE}
         />
       ))}
-    </div>
+    </ul>
   )
 }
