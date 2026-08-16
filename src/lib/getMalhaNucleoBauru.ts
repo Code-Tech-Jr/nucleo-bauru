@@ -1,6 +1,11 @@
+import malhaNucleoBauru from '../../data/malha-nucleo-bauru.json'
 import municipiosNucleoBauru from '../../data/municipios-nucleo-bauru.json'
 import type { Ej } from './getEjsNucleoBauru'
 
+// A malha vem de data/malha-nucleo-bauru.json em vez da API do IBGE: buscá-la em tempo
+// de build derrubava o CI com ConnectTimeout (os runners do GitHub não alcançam o
+// servicodados.ibge.gov.br de forma confiável). O recorte muda só quando o IBGE revisa a
+// divisão territorial. Para regerar, ver data/README.md.
 type GeoJsonFeatureCollection = {
   type: 'FeatureCollection'
   features: GeoJSON.Feature[]
@@ -9,14 +14,8 @@ type GeoJsonFeatureCollection = {
 export async function getMalhaNucleoBauru(
   ejsPromise: Promise<Ej[]>
 ): Promise<GeoJsonFeatureCollection> {
-  const [malhaRes, ejs] = await Promise.all([
-    fetch(
-      'https://servicodados.ibge.gov.br/api/v3/malhas/estados/35?intrarregiao=municipio&formato=application/vnd.geo+json&qualidade=minima',
-      { next: { revalidate: 86400 } }
-    ),
-    ejsPromise,
-  ])
-  const malha: GeoJsonFeatureCollection = await malhaRes.json()
+  const ejs = await ejsPromise
+  const malha = malhaNucleoBauru as unknown as GeoJsonFeatureCollection
 
   const municipiosPorCodigo = new Map(
     municipiosNucleoBauru.map((m) => [m.codigo_ibge, m])

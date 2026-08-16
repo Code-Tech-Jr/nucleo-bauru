@@ -8,10 +8,10 @@ const UPPERCASE_TITLE = 'uppercase tracking-wide'
 export const headingVariants = cva('', {
   variants: {
     variant: {
-      hero: 'text-[clamp(2.25rem,1.75rem+2.5vw,3.75rem)] font-bold text-white', // 4xl a 6xl
-      section: `${UPPERCASE_TITLE} text-xl font-bold text-orange`,
+      hero: 'text-[clamp(2.25rem,1.75rem+2.5vw,3.75rem)] font-extrabold text-white', // 4xl a 6xl
+      section: `${UPPERCASE_TITLE} text-xl font-extrabold text-orange`,
       content: 'text-3xl font-semibold text-blue',
-      news: `${UPPERCASE_TITLE} font-bold text-lg text-blue-light tracking-tighter`,
+      news: `${UPPERCASE_TITLE} font-extrabold text-lg text-blue-light tracking-tighter`,
     },
   },
   defaultVariants: {
