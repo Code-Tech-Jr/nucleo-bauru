@@ -13,6 +13,7 @@ import {
 import Container from '@/components/ui/Container'
 import Content from '@/components/ui/Content'
 import Heading from '@/components/ui/Heading'
+import { EMAIL, NAV_LINKS } from '@/lib/site'
 
 const REDES: {
   href: string
@@ -41,20 +42,11 @@ const REDES: {
   },
 ]
 
-const MAPA_DO_SITE = [
-  { href: '/', label: 'Início' },
-  { href: '/sobre-nos', label: 'Sobre Nós' },
-  { href: '/nossa-rede', label: 'Nossa Rede' },
-  { href: '/#eventos-e-noticias', label: 'Eventos e Notícias' },
-  { href: '/#parceiros', label: 'Parceiros' },
-]
-
 const INSTITUCIONAL = [
   { href: '/sobre-nos#quem-somos', label: 'Quem somos' },
   { href: '/sobre-nos#missao-visao-valores', label: 'Missão, Visão e Valores' },
 ]
 
-const EMAIL = 'presidencia@nucleobauru.com.br'
 const TELEFONE = '(00)0000-0000'
 
 // slot fixo para os ícones de contato, para o texto alinhar entre as linhas
@@ -66,7 +58,7 @@ function ColunaLinks({
   links,
 }: {
   titulo: string
-  links: { href: string; label: string }[]
+  links: readonly { href: string; label: string }[]
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-4">
@@ -124,7 +116,7 @@ export default function Footer() {
 
           {/* sm: as listas viram 2 colunas; lg: as três se distribuem na linha */}
           <div className="grid w-full gap-12 sm:grid-cols-2 lg:flex lg:flex-1 lg:justify-between lg:gap-12">
-            <ColunaLinks titulo="Mapa do site" links={MAPA_DO_SITE} />
+            <ColunaLinks titulo="Mapa do site" links={NAV_LINKS} />
             <ColunaLinks titulo="Institucional" links={INSTITUCIONAL} />
 
             <div className="flex min-w-0 flex-col gap-4 sm:col-span-2 lg:col-span-1">
