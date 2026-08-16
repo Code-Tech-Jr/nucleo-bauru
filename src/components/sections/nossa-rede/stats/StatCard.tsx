@@ -29,8 +29,6 @@ export default function StatCard({
   const emVista = useInView(ref, { once: true })
   const reduzirMovimento = useReducedMotion()
 
-  // MotionValue começa no valor final: o SSR (e a hidratação) já entregam o número
-  // correto; a animação de 0 até `valor` só acontece no cliente, ao entrar em vista.
   const valorAnimado = useMotionValue(valor)
   const valorExibido = useTransform(valorAnimado, (v) => Math.round(v))
 
@@ -67,7 +65,7 @@ export default function StatCard({
         {sufixo}
       </span>
 
-      <span className="text-sm font-semibold tracking-wide text-blue/80 uppercase">
+      <span className="text-sm font-bold tracking-wide text-blue/80 uppercase">
         {rotulo}
       </span>
     </li>
