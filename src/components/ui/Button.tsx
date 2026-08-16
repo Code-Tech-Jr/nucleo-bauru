@@ -63,7 +63,6 @@ export default function Button({
   showArrow,
   className,
   children,
-  href,
   ...props
 }: ButtonProps) {
   const classes = cn(buttonVariants({ variant, active }), className)
@@ -74,23 +73,16 @@ export default function Button({
     </>
   )
 
-  if (href) {
-    return (
-      <Link
-        href={href}
-        className={classes}
-        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-      >
-        {conteudo}
-      </Link>
-    )
-  }
-
-  return (
-    <button
+  return props.href !== undefined ? (
+    <Link
       className={classes}
-      {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+      {...props}
+      rel={props.target === '_blank' ? (props.rel ?? 'noopener noreferrer') : props.rel}
     >
+      {conteudo}
+    </Link>
+  ) : (
+    <button className={classes} {...props}>
       {conteudo}
     </button>
   )
