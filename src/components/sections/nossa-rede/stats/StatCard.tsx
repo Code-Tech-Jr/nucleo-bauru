@@ -54,7 +54,7 @@ export default function StatCard({
     <li
       ref={ref}
       className={cn(
-        'flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-8 text-center shadow-[6px_6px_16px_rgba(31,49,96,0.25)]',
+        'flex flex-col items-center justify-center gap-3 rounded-2xl bg-white p-8 text-center shadow-card',
         className
       )}
     >
@@ -62,12 +62,12 @@ export default function StatCard({
         {icone ?? <Rocket className="size-8" strokeWidth={2} />}
       </span>
 
-      <span className="text-8xl font-extrabold text-blue">
+      <span className="text-8xl font-extrabold text-blue tabular-nums">
         <motion.span>{valorExibido}</motion.span>
         {sufixo}
       </span>
 
-      <span className="text-sm font-bold tracking-wide text-blue/80 uppercase">
+      <span className="text-sm font-semibold tracking-wide text-blue/80 uppercase">
         {rotulo}
       </span>
     </li>
