@@ -71,7 +71,7 @@ function acharIndice(
 }
 
 export async function getEjsNucleoBauru(): Promise<Ej[]> {
-  const url = process.env.NEXT_PUBLIC_EJS_SHEET_CSV_URL
+  const url = process.env.EJS_SHEET_CSV_URL
   if (!url) return []
 
   let texto: string
