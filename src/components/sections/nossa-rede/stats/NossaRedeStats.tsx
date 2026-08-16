@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import Image from 'next/image'
-import type { Ej } from '@/lib/getEjsNucleoBauru'
+import { normalizar, type Ej } from '@/lib/getEjsNucleoBauru'
 import StatCard from './StatCard'
 
 const ICONE_FOGUETE = (
@@ -26,10 +26,10 @@ const FALLBACK_STATS = {
 export default function NossaRedeStats({ ejs }: { ejs: Ej[] }) {
   const stats = useMemo(() => {
     const cidades = new Set(
-      ejs.map((ej) => ej.cidade).filter((cidade) => cidade.trim() !== '')
+      ejs.map((ej) => normalizar(ej.cidade)).filter((cidade) => cidade !== '')
     )
     const ies = new Set(
-      ejs.map((ej) => ej.faculdade).filter((faculdade) => faculdade.trim() !== '')
+      ejs.map((ej) => normalizar(ej.faculdade)).filter((faculdade) => faculdade !== '')
     )
 
     const totalEjs = ejs.length || FALLBACK_STATS.ejs
