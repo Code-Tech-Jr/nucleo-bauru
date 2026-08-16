@@ -31,7 +31,7 @@ export default function Header() {
 
   return (
     <Container as="header" className="bg-blue">
-      <Content as="nav" className="h-25 justify-between">
+      <Content as="nav" aria-label="Principal" className="h-25 justify-between">
         <Link href="/" aria-label="Núcleo Bauru — página inicial">
           <Image
             src="/logos/logo_branco.png"
