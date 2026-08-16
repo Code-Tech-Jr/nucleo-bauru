@@ -85,7 +85,9 @@ export default function NossaRedeCliente({
   return (
     <Container>
       <Content className="flex-col items-stretch gap-8">
-        <Heading variant={'section'}>NOSSA REDE</Heading>
+        <Heading variant={'section'} as="h1">
+          NOSSA REDE
+        </Heading>
         <NossaRedeStats ejs={ejs} />
         <div className="flex flex-col gap-4">
           <Text variant={'dark'} className="text-justify">
