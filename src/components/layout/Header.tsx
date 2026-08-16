@@ -6,15 +6,8 @@ import { usePathname } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Container from '@/components/ui/Container'
 import Content from '@/components/ui/Content'
+import { EMAIL, NAV_LINKS } from '@/lib/site'
 import HeaderMobile from './HeaderMobile'
-
-const NAV_LINKS = [
-  { href: '/', label: 'Início' },
-  { href: '/sobre-nos', label: 'Sobre Nós' },
-  { href: '/nossa-rede', label: 'Nossa Rede' },
-  { href: '/parceiros', label: 'Parceiros' },
-  { href: '/eventos-e-noticias', label: 'Eventos e Notícias' },
-]
 
 export default function Header() {
   const pathname = usePathname()
