@@ -1,5 +1,3 @@
-'use client'
-
 import { useMemo } from 'react'
 import Image from 'next/image'
 import { normalizar, type Ej } from '@/lib/getEjsNucleoBauru'
