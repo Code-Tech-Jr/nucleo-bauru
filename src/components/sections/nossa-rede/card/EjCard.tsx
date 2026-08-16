@@ -45,9 +45,6 @@ export default function EjCard({
     <div className="flex flex-col overflow-hidden rounded-lg border border-blue/10 text-center shadow-sm transition-all duration-200 hover:bg-blue/5">
       <div className={cn(colapsavel, 'h-32 items-center justify-center p-6')}>
         {ej.urlLogo ? (
-          // ponytail: <img> simples em vez de next/image — logos vêm de domínios externos
-          // arbitrários da planilha, exigiria configurar remotePatterns caso a caso
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={ej.urlLogo}
             alt={ej.nome}
