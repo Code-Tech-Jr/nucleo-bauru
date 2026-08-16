@@ -13,7 +13,7 @@ export default function Header() {
   const pathname = usePathname()
 
   const links = NAV_LINKS.map(({ href, label }) => {
-    const ativo = href === '/' ? pathname === '/' : pathname.startsWith(href)
+    const ativo = pathname === href || (href !== '/' && pathname.startsWith(`${href}/`))
 
     return (
       <li key={href}>
