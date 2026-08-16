@@ -29,8 +29,9 @@ export default function StatCard({
   const emVista = useInView(ref, { once: true })
   const reduzirMovimento = useReducedMotion()
 
-  // MotionValue começa em 0 no servidor e no cliente — evita mismatch de hidratação.
-  const valorAnimado = useMotionValue(0)
+  // MotionValue começa no valor final: o SSR (e a hidratação) já entregam o número
+  // correto; a animação de 0 até `valor` só acontece no cliente, ao entrar em vista.
+  const valorAnimado = useMotionValue(valor)
   const valorExibido = useTransform(valorAnimado, (v) => Math.round(v))
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function StatCard({
       return
     }
 
-    const controles = animate(valorAnimado, valor, {
+    const controles = animate(valorAnimado, [0, valor], {
       duration: 1.5,
       ease: 'easeOut',
     })
