@@ -63,7 +63,7 @@ export default function EjCard({
           className="flex items-center justify-between gap-2 border-blue/10 p-4 text-left sm:cursor-default sm:border-t"
         >
           <span className="flex flex-1 flex-col items-center gap-1 text-center">
-            <span className="text-sm font-extrabold text-blue uppercase">{ej.nome}</span>
+            <span className="text-xl font-extrabold text-blue uppercase">{ej.nome}</span>
             {subtitulo && (
               <span className="text-xs font-extrabold text-blue/80 uppercase">
                 {subtitulo}
