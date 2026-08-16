@@ -43,7 +43,7 @@ export default function NossaRedeStats({ ejs }: { ejs: Ej[] }) {
   }, [ejs])
 
   return (
-    <ul className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul className="mb-15 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map(({ valor, sufixo, rotulo }) => (
         <StatCard
           key={rotulo}
