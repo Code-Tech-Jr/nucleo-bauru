@@ -36,8 +36,8 @@ export default function Header() {
           <Image
             src="/logos/logo_branco.png"
             alt="Núcleo Bauru"
-            width={1517}
-            height={1576}
+            width={154}
+            height={160}
             priority
             className="h-20 w-auto"
           />
