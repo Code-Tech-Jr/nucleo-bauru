@@ -1,14 +1,17 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Menu, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import { EMAIL } from '@/lib/site'
 
 export default function HeaderMobile({ links }: { links: ReactNode }) {
   const [open, setOpen] = useState(false)
+  const gatilhoRef = useRef<HTMLButtonElement>(null)
+  const fecharRef = useRef<HTMLButtonElement>(null)
 
-  // Com o menu aberto: fecha no Esc e trava o scroll da página
+  // Com o menu aberto: fecha no Esc, fecha ao virar desktop, trava o scroll da
+  // página e move o foco para o botão de fechar
   useEffect(() => {
     if (!open) return
 
@@ -16,19 +19,29 @@ export default function HeaderMobile({ links }: { links: ReactNode }) {
       if (event.key === 'Escape') setOpen(false)
     }
 
+    const mq = window.matchMedia('(min-width: 64rem)') // lg do Tailwind v4
+    const fecharSeDesktop = () => setOpen(false)
+    const gatilho = gatilhoRef.current
+
     const overflowAnterior = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     document.addEventListener('keydown', aoTeclar)
+    mq.addEventListener('change', fecharSeDesktop)
+    fecharRef.current?.focus()
 
     return () => {
       document.body.style.overflow = overflowAnterior
       document.removeEventListener('keydown', aoTeclar)
+      mq.removeEventListener('change', fecharSeDesktop)
+      // só devolve o foco se o gatilho ainda estiver na página (não roubar no desmonte)
+      if (gatilho?.isConnected) gatilho.focus()
     }
   }, [open])
 
   return (
     <>
       <button
+        ref={gatilhoRef}
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Abrir menu"
@@ -50,8 +63,6 @@ export default function HeaderMobile({ links }: { links: ReactNode }) {
 
       <div
         id="menu-mobile"
-        role="dialog"
-        aria-modal="true"
         aria-label="Menu de navegação"
         aria-hidden={!open}
         inert={!open}
@@ -60,6 +71,7 @@ export default function HeaderMobile({ links }: { links: ReactNode }) {
         }`}
       >
         <button
+          ref={fecharRef}
           type="button"
           onClick={() => setOpen(false)}
           aria-label="Fechar menu"
