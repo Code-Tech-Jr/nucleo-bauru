@@ -1,10 +1,16 @@
 'use client'
 
-import { useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
+import { useActionState, useState, type ChangeEvent, type ReactNode } from 'react'
 import { ChevronDown } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Heading from '@/components/ui/Heading'
-import { ASSUNTOS, linkGmail, linkMailto, type DadosContato } from '@/lib/emailContato'
+import {
+  ASSUNTOS,
+  ESTADO_INICIAL,
+  linkMailto,
+  type DadosContato,
+} from '@/lib/emailContato'
+import { enviarContato } from '@/lib/enviarContato'
 import { cn } from '@/lib/utils'
 
 const VAZIO: DadosContato = { nome: '', email: '', assunto: '', mensagem: '' }
@@ -23,7 +29,16 @@ function Rotulo({ campo, children }: { campo: string; children: ReactNode }) {
 
 export default function FormContato() {
   const [dados, setDados] = useState<DadosContato>(VAZIO)
-  const [aberto, setAberto] = useState(false)
+  const [estado, acao, enviando] = useActionState(enviarContato, ESTADO_INICIAL)
+  const [ultimoEstado, setUltimoEstado] = useState(estado)
+
+  // deu certo: limpa os campos. o aviso de sucesso continua na tela porque vem
+  // do estado da action, não daqui. ajuste no meio do render (e não num effect)
+  // pra não pintar a tela uma vez com os campos ainda preenchidos.
+  if (estado !== ultimoEstado) {
+    setUltimoEstado(estado)
+    if (estado.status === 'ok') setDados(VAZIO)
+  }
 
   function atualizar(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -32,19 +47,9 @@ export default function FormContato() {
     setDados((atual) => ({ ...atual, [name]: value }))
   }
 
-  function aoEnviar(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    // o window.open tem que sair dentro do gesto do clique, senão o bloqueador de pop-up barra
-    window.open(linkGmail(dados), '_blank', 'noopener,noreferrer')
-    setAberto(true)
-  }
-
   return (
     // mobile: tudo numa coluna só. lg: dados de contato à esquerda, mensagem à direita
-    <form
-      onSubmit={aoEnviar}
-      className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8"
-    >
+    <form action={acao} className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
       <Heading variant="section" className="lg:col-span-2">
         Entre em contato
       </Heading>
@@ -126,7 +131,17 @@ export default function FormContato() {
           />
         </div>
 
-        {/* consentimento é só trava de UI: nada sai daqui sem a pessoa enviar pelo Gmail */}
+        {/* isca de bot: invisível e fora da navegação por teclado/leitor de tela.
+            se vier preenchido, a action descarta o envio */}
+        <input
+          type="text"
+          name="site"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+          className="hidden"
+        />
+
         <label className="flex items-start gap-2 text-xs text-blue">
           <input
             type="checkbox"
@@ -144,17 +159,23 @@ export default function FormContato() {
         <Button
           type="submit"
           variant="solid"
-          className="w-full hover:bg-orange/90 hover:text-white"
+          disabled={enviando}
+          className="w-full hover:bg-orange/90 hover:text-white disabled:cursor-progress disabled:opacity-70"
         >
-          Enviar
+          {enviando ? 'Enviando...' : 'Enviar'}
         </Button>
 
-        {aberto && (
+        {estado.status === 'ok' && (
           <p aria-live="polite" className="text-xs text-blue">
-            Abrimos o Gmail com sua mensagem pronta — é só clicar em Enviar por lá. Não
-            abriu?{' '}
+            Mensagem enviada! Vamos responder no e-mail que você informou.
+          </p>
+        )}
+
+        {estado.status === 'erro' && (
+          <p aria-live="polite" className="text-xs text-blue">
+            {estado.mensagem}{' '}
             <a href={linkMailto(dados)} className="font-bold text-orange underline">
-              Abrir no seu app de e-mail
+              Enviar pelo seu app de e-mail
             </a>
             .
           </p>
