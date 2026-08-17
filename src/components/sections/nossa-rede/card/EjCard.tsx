@@ -45,16 +45,13 @@ export default function EjCard({
     <div className="flex flex-col overflow-hidden rounded-lg border border-blue/10 text-center shadow-sm transition-all duration-200 hover:bg-blue/5">
       <div className={cn(colapsavel, 'h-32 items-center justify-center p-6')}>
         {ej.urlLogo ? (
-          // ponytail: <img> simples em vez de next/image — logos vêm de domínios externos
-          // arbitrários da planilha, exigiria configurar remotePatterns caso a caso
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={ej.urlLogo}
             alt={ej.nome}
             className="max-h-full max-w-full object-contain"
           />
         ) : (
-          <span className="text-2xl font-bold text-blue">{ej.nome}</span>
+          <span className="text-2xl font-extrabold text-blue">{ej.nome}</span>
         )}
       </div>
 
@@ -66,9 +63,9 @@ export default function EjCard({
           className="flex items-center justify-between gap-2 border-blue/10 p-4 text-left sm:cursor-default sm:border-t"
         >
           <span className="flex flex-1 flex-col items-center gap-1 text-center">
-            <span className="text-sm font-bold text-blue uppercase">{ej.nome}</span>
+            <span className="text-xl font-extrabold text-blue uppercase">{ej.nome}</span>
             {subtitulo && (
-              <span className="text-xs font-bold text-blue/80 uppercase">
+              <span className="text-xs font-extrabold text-blue/80 uppercase">
                 {subtitulo}
               </span>
             )}

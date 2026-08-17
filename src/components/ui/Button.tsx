@@ -2,6 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const PILL_BASE = 'rounded-lg border-1 border-transparent px-4 py-3 font-semibold md:px-5'
 
@@ -32,7 +33,7 @@ export const buttonVariants = cva(
       {
         variant: 'header',
         active: true,
-        class: 'lg:border-orange lg:pb-3',
+        class: 'border-orange lg:pb-3',
       },
     ],
     defaultVariants: {
@@ -43,13 +44,18 @@ export const buttonVariants = cva(
 )
 
 // Caso o botão tenha a setinha use o atributo showArrow sendo true que ja ira aparecer
-interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+interface BaseProps extends VariantProps<typeof buttonVariants> {
   showArrow?: boolean
   children: ReactNode
+  className?: string
 }
+
+// Passando href o componente vira um link de navegação (next/link) com o mesmo visual
+type ButtonProps = BaseProps &
+  (
+    | ({ href: string } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>)
+    | ({ href?: undefined } & React.ButtonHTMLAttributes<HTMLButtonElement>)
+  )
 
 export default function Button({
   variant,
@@ -59,10 +65,25 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  return (
-    <button className={cn(buttonVariants({ variant, active }), className)} {...props}>
+  const classes = cn(buttonVariants({ variant, active }), className)
+  const conteudo = (
+    <>
       {children}
       {showArrow && <ArrowRight className="size-5" strokeWidth={3} />}
+    </>
+  )
+
+  return props.href !== undefined ? (
+    <Link
+      className={classes}
+      {...props}
+      rel={props.target === '_blank' ? (props.rel ?? 'noopener noreferrer') : props.rel}
+    >
+      {conteudo}
+    </Link>
+  ) : (
+    <button className={classes} {...props}>
+      {conteudo}
     </button>
   )
 }

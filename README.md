@@ -20,6 +20,22 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000).
 
+## Variáveis de ambiente
+
+Copie o `.env.example` pra `.env.local` e preencha:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variável            | O que é                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `EJS_SHEET_CSV_URL` | URL de export CSV da planilha de EJs publicada na web (na planilha: Arquivo → Compartilhar → Publicar na web → CSV) |
+
+Ela é lida **só no servidor** (`src/lib/getEjsNucleoBauru.ts`, usado pelo Server Component `src/app/nossa-rede/page.tsx`). Por isso **não** tem o prefixo `NEXT_PUBLIC_`: sem ele, o Next garante que a URL nunca vá parar no bundle do cliente. Se um dia precisar dela num Client Component, passe o dado já pronto por prop em vez de expor a URL.
+
+Sem essa variável (ou com a planilha fora do ar) o `getEjsNucleoBauru` devolve lista vazia: o mapa fica sem nenhuma cidade laranja, a busca não acha EJ nenhuma e os números da seção "Nossa Rede" caem no fallback fixo do `NossaRedeStats` (40 EJs / 12 cidades / 7 IES). Se você clonou o repo e vê esses números, é isso — não é bug. Peça a URL pra quem cuida da planilha.
+
 ## Scripts
 
 | Comando                | O que faz                                    |

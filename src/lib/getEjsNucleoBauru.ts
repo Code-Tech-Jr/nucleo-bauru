@@ -71,12 +71,24 @@ function acharIndice(
 }
 
 export async function getEjsNucleoBauru(): Promise<Ej[]> {
-  const url = process.env.NEXT_PUBLIC_EJS_SHEET_CSV_URL
+  const url = process.env.EJS_SHEET_CSV_URL
   if (!url) return []
 
-  const res = await fetch(url, { next: { revalidate: 300 } })
-  const texto = await res.text()
+  let texto: string
+  try {
+    const res = await fetch(url, {
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(10_000),
+    })
+    if (!res.ok) return []
+    texto = await res.text()
+  } catch {
+    // Planilha fora do ar ou timeout: lista vazia — o fallback já existe no NossaRedeStats.
+    return []
+  }
+
   const [cabecalho, ...linhas] = parseCsv(texto)
+  if (!cabecalho) return []
 
   const indices = {
     id: acharIndice(cabecalho, (c) => c === 'id'),
