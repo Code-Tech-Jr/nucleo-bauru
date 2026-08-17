@@ -1,3 +1,10 @@
+import NoticiasEventos from '@/components/sections/noticias/NoticiasEventos'
+
 export default function Home() {
-  return <>INICIO</>
+  return (
+    <>
+      INICIO
+      <NoticiasEventos />
+    </>
+  )
 }

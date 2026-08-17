@@ -28,9 +28,10 @@ Copie o `.env.example` pra `.env.local` e preencha:
 cp .env.example .env.local
 ```
 
-| Variável            | O que é                                                                                                             |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `EJS_SHEET_CSV_URL` | URL de export CSV da planilha de EJs publicada na web (na planilha: Arquivo → Compartilhar → Publicar na web → CSV) |
+| Variável                 | O que é                                                                                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `EJS_SHEET_CSV_URL`      | URL de export CSV da aba **EJs** publicada na web (na planilha: Arquivo → Compartilhar → Publicar na web → CSV)             |
+| `NOTICIAS_SHEET_CSV_URL` | Mesma coisa, mas da aba **Noticias e Eventos** — alimenta a seção "Eventos e Notícias" da Home e as páginas de cada notícia |
 
 Ela é lida **só no servidor** (`src/lib/getEjsNucleoBauru.ts`, usado pelo Server Component `src/app/nossa-rede/page.tsx`). Por isso **não** tem o prefixo `NEXT_PUBLIC_`: sem ele, o Next garante que a URL nunca vá parar no bundle do cliente. Se um dia precisar dela num Client Component, passe o dado já pronto por prop em vez de expor a URL.
 
@@ -113,6 +114,31 @@ Mexer **só** no `data/municipios-nucleo-bauru.json`:
 - **Saiu** uma cidade → remova a entrada dela do JSON.
 
 Não precisa tocar em `Map.tsx` nem em `getMalhaNucleoBauru.ts`: o filtro é dirigido pelo JSON. E **não** edite o `tem_ej` — ele é recalculado sozinho a partir da planilha de EJs; pra uma cidade acender de laranja pra clicável basta ter uma EJ ativa cadastrada nela.
+
+## Notícias e eventos
+
+A seção "Eventos e Notícias" da Home (`src/components/sections/noticias/`) mostra as **3 notícias mais recentes** da aba `Noticias e Eventos` da planilha, e cada card leva pra `/noticias-e-eventos/<id>` — a rota dinâmica em `src/app/noticias-e-eventos/[id]/page.tsx`, que é o **molde único** de todas as notícias: o conteúdo muda, o layout não.
+
+O fluxo é o mesmo dos EJs: `src/lib/getNoticias.ts` baixa o CSV (`NOTICIAS_SHEET_CSV_URL`, cache de 5 min) e devolve a lista já filtrada e ordenada por data decrescente.
+
+Uma linha da planilha **só aparece no site** se tiver `publicada = SIM` e todos estes campos preenchidos:
+
+| Campo             | Obrigatório | Observação                                                      |
+| ----------------- | ----------- | --------------------------------------------------------------- |
+| `id`              | sim         | minúsculo, sem acento, com hífen — vira a URL da notícia        |
+| `titulo`          | sim         | —                                                               |
+| `data`            | sim         | exatamente no formato `AAAA-MM-DD` — outro formato é descartado |
+| `imagem_capa`     | sim         | horizontal, link do Cloudinary                                  |
+| `conteudo`        | sim         | texto completo; `##` no começo da linha vira subtítulo de seção |
+| `descricao`       | não         | resumo do card e do topo da página                              |
+| `imagem_conteudo` | não         | horizontal, entra depois do 1º bloco de texto                   |
+| `imagem_destaque` | não         | vertical, entra depois do 2º bloco de texto                     |
+
+Linha incompleta é ignorada **em silêncio** (sem erro, sem card quebrado). Se a notícia não aparecer no site, é quase sempre um desses campos vazio ou a data fora do formato.
+
+Sem `NOTICIAS_SHEET_CSV_URL` (ou com a planilha fora do ar) a lista vem vazia e a seção da Home simplesmente não renderiza — a página não quebra.
+
+> As imagens precisam estar no Cloudinary: `res.cloudinary.com` é o único host liberado pro `next/image` no `next.config.ts`. Link de outro domínio dá erro de imagem.
 
 ## Design tokens (`src/app/globals.css`)
 
