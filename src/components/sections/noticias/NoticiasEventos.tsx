@@ -11,7 +11,7 @@ const QUANTIDADE_NA_HOME = 3
 export default async function NoticiasEventos() {
   const noticias = (await getNoticias()).slice(0, QUANTIDADE_NA_HOME)
 
-  // Sem planilha configurada ou sem nenhuma linha válida a seção não existe
+  // Sem planilha configurada ou sem nenhuma linha válida, a seção não existe
   if (noticias.length === 0) return null
 
   return (
