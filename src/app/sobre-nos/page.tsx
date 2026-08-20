@@ -20,7 +20,8 @@ export default function SobreNos() {
         </Content>
       </Container>
 
-      <Container as="section" className="flex-col gap-10 py-12">
+      {/* id: alvo da âncora /sobre-nos#quem-somos usada no rodapé */}
+      <Container as="section" id="quem-somos" className="flex-col gap-10 py-12">
         <Content className="flex-col gap-10">
           <Heading variant="section" className="self-start">
             Quem Somos?
