@@ -13,9 +13,6 @@ import Content from '@/components/ui/Content'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 
-// Este arquivo é o molde de todas as notícias e eventos
-// o conteúdo vem da planilha, o layout é sempre este
-
 type Params = { params: Promise<{ id: string }> }
 
 export async function generateStaticParams() {
@@ -28,9 +25,20 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const noticia = await getNoticia(id)
   if (!noticia) return {}
 
+  const url = `/noticias-e-eventos/${noticia.id}`
+
   return {
-    title: `${noticia.titulo} | Núcleo Bauru`,
+    title: noticia.titulo,
     description: noticia.descricao || undefined,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      title: noticia.titulo,
+      description: noticia.descricao || undefined,
+      publishedTime: noticia.data,
+      images: [noticia.imagemCapa],
+      url,
+    },
   }
 }
 
@@ -42,32 +50,34 @@ export default async function NoticiaPage({ params }: Params) {
   const blocos = parseConteudo(noticia.conteudo)
 
   return (
-    <>
+    <article>
       <Container
-        as="section"
+        as="header"
         className="min-h-55 shrink-0 py-8"
         style={{ background: 'var(--gradient-brand)' }}
       >
         <Content>
-          <Heading variant="hero" as="h1" className="text-5xl">
+          {/* break-words: o text-5xl descarta o clamp do variant, e sem isso um
+              título com palavra longa estoura a caixa em 320px */}
+          <Heading variant="hero" as="h1" className="text-5xl break-words">
             {noticia.titulo}
           </Heading>
         </Content>
       </Container>
 
-      <Container as="article" className="flex-col gap-8 py-12">
-        {/* max-w: sem isso, em monitor grande a linha de texto fica larga demais e cada
-            imagem aspect-video vira um bloco de ~950px de altura */}
+      <Container className="flex-col gap-8 py-12">
+        {/* sem o max-w a linha de texto fica larga demais em monitor grande */}
         <Content className="max-w-[900px] flex-col items-stretch gap-8">
           <ImagemNoticia
             src={noticia.imagemCapa}
-            alt={noticia.titulo}
-            priority
+            alt={noticia.imagemCapaAlt}
+            preload
+            orientacao="horizontal"
             sizes="(min-width: 1024px) 900px, 92vw"
-            className="aspect-video w-full"
           />
 
           <time dateTime={noticia.data} className="font-semibold text-orange uppercase">
+            <span className="sr-only">Publicado em </span>
             {formatarDataCompleta(noticia.data)}
           </time>
 
@@ -94,10 +104,12 @@ export default async function NoticiaPage({ params }: Params) {
 
           <GaleriaNoticia
             conteudo={noticia.imagemConteudo}
+            conteudoAlt={noticia.imagemConteudoAlt}
             destaque={noticia.imagemDestaque}
+            destaqueAlt={noticia.imagemDestaqueAlt}
           />
         </Content>
       </Container>
-    </>
+    </article>
   )
 }
