@@ -117,28 +117,41 @@ Não precisa tocar em `Map.tsx` nem em `getMalhaNucleoBauru.ts`: o filtro é dir
 
 ## Notícias e eventos
 
-A seção "Eventos e Notícias" da Home (`src/components/sections/noticias/`) mostra as **3 notícias mais recentes** da aba `Noticias e Eventos` da planilha, e cada card leva pra `/noticias-e-eventos/<id>` — a rota dinâmica em `src/app/noticias-e-eventos/[id]/page.tsx`, que é o **molde único** de todas as notícias: o conteúdo muda, o layout não.
+A seção "Eventos e Notícias" da Home (`src/components/sections/noticias/`) mostra as **3 notícias mais recentes** da aba `Noticias e Eventos` da planilha; `/noticias-e-eventos` lista todas, e cada card leva pra `/noticias-e-eventos/<id>` — a rota dinâmica em `src/app/noticias-e-eventos/[id]/page.tsx`, que é o **molde único** de todas as notícias: o conteúdo muda, o layout não.
 
 O fluxo é o mesmo dos EJs: `src/lib/getNoticias.ts` baixa o CSV (`NOTICIAS_SHEET_CSV_URL`, cache de 5 min) e devolve a lista já filtrada e ordenada por data decrescente.
 
 Uma linha da planilha **só aparece no site** se tiver `publicada = SIM` e todos estes campos preenchidos:
 
-| Campo             | Obrigatório | Observação                                                      |
-| ----------------- | ----------- | --------------------------------------------------------------- |
-| `id`              | sim         | minúsculo, sem acento, com hífen — vira a URL da notícia        |
-| `titulo`          | sim         | —                                                               |
-| `data`            | sim         | exatamente no formato `AAAA-MM-DD` — outro formato é descartado |
-| `imagem_capa`     | sim         | horizontal, link do Cloudinary                                  |
-| `conteudo`        | sim         | texto completo; `##` no começo da linha vira subtítulo de seção |
-| `descricao`       | não         | resumo do card e do topo da página                              |
-| `imagem_conteudo` | não         | horizontal, entra depois do 1º bloco de texto                   |
-| `imagem_destaque` | não         | vertical, entra depois do 2º bloco de texto                     |
+| Campo                 | Obrigatório | Observação                                                                              |
+| --------------------- | ----------- | --------------------------------------------------------------------------------------- |
+| `id`                  | sim         | **só minúsculas, números e hífen** — vira a URL da notícia. Acento ou espaço a descarta |
+| `titulo`              | sim         | —                                                                                       |
+| `data`                | sim         | `AAAA-MM-DD`, e a data precisa existir de verdade (`2026-02-30` é descartada)           |
+| `imagem_capa`         | sim         | horizontal, link do Cloudinary da nossa conta                                           |
+| `conteudo`            | sim         | texto completo; `##` no começo da linha vira subtítulo de seção                         |
+| `descricao`           | não         | resumo do card e do topo da página                                                      |
+| `imagem_capa_alt`     | não         | descrição da foto para quem usa leitor de tela                                          |
+| `imagem_conteudo`     | não         | horizontal, entra na galeria ao final da matéria (à esquerda)                           |
+| `imagem_conteudo_alt` | não         | idem                                                                                    |
+| `imagem_destaque`     | não         | vertical, entra na galeria ao final da matéria (à direita)                              |
+| `imagem_destaque_alt` | não         | idem                                                                                    |
+
+As colunas `_alt` ficam **ao lado da coluna da foto correspondente**. Descreva o que aparece
+na imagem, não repita o título — é o que a pessoa cega vai ouvir no lugar da foto. Vazio =
+a imagem é tratada como decorativa.
+
+No `conteudo`, **linhas seguidas formam um parágrafo só**; para começar um parágrafo novo,
+deixe uma linha em branco. Quebrar linha só para caber na célula não cria parágrafo.
+
+Os nomes das colunas são comparados ignorando acento, maiúscula, `_` e espaço — mas o resto
+precisa bater exatamente. Coluna obrigatória faltando gera aviso no log do build.
 
 Linha incompleta é ignorada **em silêncio** (sem erro, sem card quebrado). Se a notícia não aparecer no site, é quase sempre um desses campos vazio ou a data fora do formato.
 
 Sem `NOTICIAS_SHEET_CSV_URL` (ou com a planilha fora do ar) a lista vem vazia e a seção da Home simplesmente não renderiza — a página não quebra.
 
-> As imagens precisam estar no Cloudinary: `res.cloudinary.com` é o único host liberado pro `next/image` no `next.config.ts`. Link de outro domínio dá erro de imagem.
+> As imagens precisam estar na **nossa conta** do Cloudinary (`res.cloudinary.com/bu6xbdjg/image/upload/...`) — é o único caminho liberado pro `next/image` no `next.config.ts`, e o mesmo valor está em `CLOUDINARY_BASE` (`src/lib/site.ts`). Link de outro domínio (ou de outra conta) **não dá erro de build**: a linha é descartada em silêncio, como qualquer campo inválido.
 
 ## Design tokens (`src/app/globals.css`)
 
