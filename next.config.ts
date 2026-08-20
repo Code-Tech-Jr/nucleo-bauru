@@ -2,8 +2,17 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
-    // As imagens das notícias vêm da planilha, hospedadas no Cloudinary.
-    remotePatterns: [{ protocol: 'https', hostname: 'res.cloudinary.com' }],
+    // Restrito à nossa conta: sem o pathname o otimizador serviria qualquer conta
+    // do Cloudinary, e sem o search dava para multiplicar entradas de cache com
+    // ?v=1, ?v=2... Precisa bater com CLOUDINARY_BASE em src/lib/site.ts.
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/bu6xbdjg/image/upload/**',
+        search: '',
+      },
+    ],
   },
 }
 

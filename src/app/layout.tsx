@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Open_Sans } from 'next/font/google'
 import Header from '@/components/layout/Header'
+import { SITE_URL } from '@/lib/site'
 import './globals.css'
 import Footer from '@/components/layout/Footer'
 
@@ -11,7 +12,12 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Núcleo Bauru',
+  // sem metadataBase o canonical e o og:url saem como http://localhost:3000
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Núcleo Bauru',
+    template: '%s | Núcleo Bauru',
+  },
   description: 'Núcleo Bauru — Movimento Empresa Júnior no Oeste Paulista.',
 }
 
