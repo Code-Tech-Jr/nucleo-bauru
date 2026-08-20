@@ -1,46 +1,38 @@
-'use client'
-
 import Image from 'next/image'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
+
+// width/height são só dica para reservar espaço antes do carregamento; a altura
+// final vem da proporção real do arquivo (`h-auto`), então nada é recortado.
+const DICA_DE_PROPORCAO = {
+  horizontal: { width: 1600, height: 900 },
+  vertical: { width: 900, height: 1200 },
+} as const
 
 type Props = {
   src: string
   alt: string
   sizes: string
+  orientacao: keyof typeof DICA_DE_PROPORCAO
   className?: string
-  priority?: boolean
-  onFalhar?: () => void
+  preload?: boolean
 }
 
-// As URLs das imagens vêm da planilha
-// célula com link errado a caixa inteira some, em vez de deixar um buraco vazio na matéria
 export default function ImagemNoticia({
   src,
   alt,
   sizes,
+  orientacao,
   className,
-  priority,
-  onFalhar,
+  preload,
 }: Props) {
-  const [falhou, setFalhou] = useState(false)
-
-  if (falhou) return null
-
   return (
-    <div className={cn('relative overflow-hidden rounded-lg', className)}>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes={sizes}
-        priority={priority}
-        className="object-cover"
-        onError={() => {
-          setFalhou(true)
-          onFalhar?.()
-        }}
-      />
-    </div>
+    <Image
+      src={src}
+      alt={alt}
+      {...DICA_DE_PROPORCAO[orientacao]}
+      sizes={sizes}
+      preload={preload}
+      className={cn('h-auto w-full rounded-lg', className)}
+    />
   )
 }

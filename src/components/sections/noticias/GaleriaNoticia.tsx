@@ -1,52 +1,56 @@
-'use client'
-
-import { useState } from 'react'
 import ImagemNoticia from './ImagemNoticia'
 
 type Props = {
   conteudo: string
+  conteudoAlt: string
   destaque: string
+  destaqueAlt: string
 }
 
-// Galeria que fecha a matéria: as duas imagens lado a lado, com a mesma altura.
-// As larguras (70/30) são a proporção de cada uma numa altura de 352px — assim a
-// horizontal e a vertical ficam alinhadas sem cortar quase nada. No mobile empilham,
-// cada uma com o seu próprio formato. `grow`: se só uma das duas vier preenchida na
-// planilha (ou se a outra quebrar), a que sobrou ocupa a linha inteira.
-export default function GaleriaNoticia({ conteudo, destaque }: Props) {
-  const [quebradas, setQuebradas] = useState<string[]>([])
+// 70/30 é a proporção de uma horizontal e uma vertical na mesma altura: com as
+// duas presentes elas se alinham sozinhas. Sozinha, a horizontal ocupa a largura
+// toda, como a capa.
+export default function GaleriaNoticia({
+  conteudo,
+  conteudoAlt,
+  destaque,
+  destaqueAlt,
+}: Props) {
+  if (!conteudo && !destaque) return null
 
-  const imagens = []
-  if (conteudo) {
-    imagens.push({
-      src: conteudo,
-      className: 'aspect-video grow md:aspect-auto md:basis-[70%]',
-      sizes: '(min-width: 768px) 620px, 92vw',
-    })
-  }
-  if (destaque) {
-    imagens.push({
-      src: destaque,
-      className: 'aspect-3/4 grow md:aspect-auto md:basis-[30%]',
-      sizes: '(min-width: 768px) 266px, 92vw',
-    })
-  }
-
-  const visiveis = imagens.filter(({ src }) => !quebradas.includes(src))
-  if (visiveis.length === 0) return null
+  const ladoALado = Boolean(conteudo && destaque)
 
   return (
-    <div className="flex flex-col gap-4 md:h-88 md:flex-row">
-      {visiveis.map(({ src, className, sizes }) => (
+    <div className="flex flex-col items-start gap-4 md:flex-row md:justify-center">
+      {conteudo && (
         <ImagemNoticia
-          key={src}
-          src={src}
-          alt=""
-          sizes={sizes}
-          className={className}
-          onFalhar={() => setQuebradas((atual) => [...atual, src])}
+          src={conteudo}
+          alt={conteudoAlt}
+          orientacao="horizontal"
+          // sozinha ela vale os 900px da capa, não os 620 de meia linha
+          sizes={
+            ladoALado
+              ? '(min-width: 982px) 620px, (min-width: 768px) 65vw, 92vw'
+              : '(min-width: 1024px) 900px, 92vw'
+          }
+          className={ladoALado ? 'md:basis-[70%]' : undefined}
         />
-      ))}
+      )}
+
+      {destaque && (
+        <ImagemNoticia
+          src={destaque}
+          alt={destaqueAlt}
+          orientacao="vertical"
+          sizes={
+            ladoALado
+              ? '(min-width: 982px) 266px, (min-width: 768px) 28vw, 92vw'
+              : '(min-width: 982px) 300px, (min-width: 768px) 32vw, 92vw'
+          }
+          // contida: em 900px de largura a vertical teria 1200px de altura
+          className={ladoALado ? 'md:basis-[30%]' : 'md:w-1/3'}
+        />
+      )}
     </div>
   )
 }
