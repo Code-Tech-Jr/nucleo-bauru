@@ -1,3 +1,18 @@
+import { normalizar, parseCsv } from '@/lib/csv'
+
+// NossaRedeStats importa normalizar daqui; reexporta pra não mexer no consumidor.
+export { normalizar }
+
+// Esta planilha casa coluna por predicado (mais frouxo que o das notícias, que
+// usa nome exato). Mantido como está: mudar a política de casamento aqui mexeria
+// numa página em produção sem necessidade.
+function acharIndice(
+  cabecalho: string[],
+  predicado: (coluna: string) => boolean
+): number {
+  return cabecalho.findIndex((coluna) => predicado(normalizar(coluna)))
+}
+
 export type Ej = {
   id: string
   nome: string
@@ -13,61 +28,6 @@ export type Ej = {
   urlLinkedin: string
   urlYoutube: string
   ativa: boolean
-}
-
-function parseCsv(texto: string): string[][] {
-  const linhas: string[][] = []
-  let campo = ''
-  let linha: string[] = []
-  let dentroDeAspas = false
-
-  for (let i = 0; i < texto.length; i++) {
-    const char = texto[i]
-
-    if (dentroDeAspas) {
-      if (char === '"' && texto[i + 1] === '"') {
-        campo += '"'
-        i++
-      } else if (char === '"') {
-        dentroDeAspas = false
-      } else {
-        campo += char
-      }
-      continue
-    }
-
-    if (char === '"') {
-      dentroDeAspas = true
-    } else if (char === ',') {
-      linha.push(campo)
-      campo = ''
-    } else if (char === '\n' || char === '\r') {
-      if (char === '\r' && texto[i + 1] === '\n') i++
-      linha.push(campo)
-      linhas.push(linha)
-      linha = []
-      campo = ''
-    } else {
-      campo += char
-    }
-  }
-  if (campo !== '' || linha.length > 0) {
-    linha.push(campo)
-    linhas.push(linha)
-  }
-
-  return linhas.filter((l) => l.some((c) => c.trim() !== ''))
-}
-
-export function normalizar(texto: string): string {
-  return texto.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-}
-
-function acharIndice(
-  cabecalho: string[],
-  predicado: (coluna: string) => boolean
-): number {
-  return cabecalho.findIndex((coluna) => predicado(normalizar(coluna)))
 }
 
 export async function getEjsNucleoBauru(): Promise<Ej[]> {

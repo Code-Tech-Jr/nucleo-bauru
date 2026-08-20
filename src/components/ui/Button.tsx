@@ -11,7 +11,7 @@ const PILL_BASE = 'rounded-lg border-1 border-transparent px-4 py-3 font-semibol
 // light - Fundo branco escrita em azul
 // solid - fundo laranja escrita em branco
 
-//active é apenas para quem for fazer o header, mas como o default é false nao precisa setar
+//active é apenas para quem for fazer o header, mas como o default é false não precisa setar
 export const buttonVariants = cva(
   'text-btn inline-flex items-center justify-center gap-2 cursor-pointer transition-all ease-in-out select-none active:opacity-80 duration-500',
   {
@@ -43,7 +43,7 @@ export const buttonVariants = cva(
   }
 )
 
-// Caso o botão tenha a setinha use o atributo showArrow sendo true que ja ira aparecer
+// Caso o botão tenha a setinha use o atributo showArrow sendo true que já irá aparecer
 interface BaseProps extends VariantProps<typeof buttonVariants> {
   showArrow?: boolean
   children: ReactNode
