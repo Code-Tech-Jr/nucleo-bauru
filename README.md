@@ -28,13 +28,30 @@ Copie o `.env.example` pra `.env.local` e preencha:
 cp .env.example .env.local
 ```
 
-| Variável            | O que é                                                                                                             |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `EJS_SHEET_CSV_URL` | URL de export CSV da planilha de EJs publicada na web (na planilha: Arquivo → Compartilhar → Publicar na web → CSV) |
+| Variável             | O que é                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `EJS_SHEET_CSV_URL`  | URL de export CSV da planilha de EJs publicada na web (na planilha: Arquivo → Compartilhar → Publicar na web → CSV) |
+| `RESEND_API_KEY`     | chave da API do [Resend](https://resend.com/api-keys) usada pra enviar os e-mails do formulário de contato          |
+| `CONTATO_EMAIL_FROM` | remetente desses e-mails — precisa ser de um domínio verificado no Resend                                           |
+| `CONTATO_EMAIL_TO`   | caixa que recebe os contatos do site (sem ela, cai no `EMAIL` de `src/lib/site.ts`)                                 |
 
-Ela é lida **só no servidor** (`src/lib/getEjsNucleoBauru.ts`, usado pelo Server Component `src/app/nossa-rede/page.tsx`). Por isso **não** tem o prefixo `NEXT_PUBLIC_`: sem ele, o Next garante que a URL nunca vá parar no bundle do cliente. Se um dia precisar dela num Client Component, passe o dado já pronto por prop em vez de expor a URL.
+A `EJS_SHEET_CSV_URL` é lida **só no servidor** (`src/lib/getEjsNucleoBauru.ts`, usado pelo Server Component `src/app/nossa-rede/page.tsx`). Por isso **não** tem o prefixo `NEXT_PUBLIC_`: sem ele, o Next garante que a URL nunca vá parar no bundle do cliente. Se um dia precisar dela num Client Component, passe o dado já pronto por prop em vez de expor a URL.
 
 Sem essa variável (ou com a planilha fora do ar) o `getEjsNucleoBauru` devolve lista vazia: o mapa fica sem nenhuma cidade laranja, a busca não acha EJ nenhuma e os números da seção "Nossa Rede" caem no fallback fixo do `NossaRedeStats` (40 EJs / 12 cidades / 7 IES). Se você clonou o repo e vê esses números, é isso — não é bug. Peça a URL pra quem cuida da planilha.
+
+### Checklist do formulário de contato
+
+Todos os pontos a preencher estão marcados no código com `TODO(resend)` — rode `grep -rn "TODO(resend)" .` para achar. São dois lugares:
+
+1. **`.env.local`** (desenvolvimento) — `RESEND_API_KEY`, `CONTATO_EMAIL_FROM`, `CONTATO_EMAIL_TO`.
+2. **Painel da Vercel** (produção) — as mesmas três variáveis, em Settings → Environment Variables.
+
+Antes de considerar o formulário no ar: chave criada no Resend, domínio verificado (ou `onboarding@resend.dev` com `CONTATO_EMAIL_TO` apontando pro e-mail dono da conta) e um envio de teste que chegou de verdade na caixa.
+
+Duas armadilhas do `CONTATO_EMAIL_FROM`, as duas silenciosas:
+
+- **Aspas.** O `.env.example` traz o valor sem aspas de propósito. O loader de `.env` do Next tira as aspas sozinho, mas o painel de variáveis de ambiente da Vercel **não** — quem colar `"Núcleo Bauru <contato@...>"` lá recebe `Invalid 'from' field` do Resend em todo envio.
+- **Fallback mudo.** Se a variável não for definida, o `src/lib/enviarContato.ts` cai em `onboarding@resend.dev`, e nesse modo o Resend só entrega pro e-mail dono da conta. O formulário responde "enviado", ninguém vê erro nenhum e as mensagens somem. Se o contato parou de chegar em produção, confira essa variável primeiro.
 
 ## Scripts
 
