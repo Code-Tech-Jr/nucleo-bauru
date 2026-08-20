@@ -1,91 +1,62 @@
+import { cache } from 'react'
+import { acharColuna, chaveDeColuna, parseCsv } from '@/lib/csv'
+import { CLOUDINARY_BASE } from '@/lib/site'
+
 export type Noticia = {
   id: string
   titulo: string
   descricao: string
   imagemCapa: string
+  imagemCapaAlt: string
   imagemConteudo: string
+  imagemConteudoAlt: string
   imagemDestaque: string
+  imagemDestaqueAlt: string
   data: string
   conteudo: string
 }
 
-// Bloco de conteúdo: o texto da planilha é dividido em subtitulos pelas linhas
-// iniciadas em "##" (ver o guia de uso da planilha). O texto antes do primeiro "##"
-// vira um bloco sem título.
+// O texto antes do primeiro "##" vira um bloco sem título.
 export type BlocoConteudo = {
   titulo: string
   paragrafos: string[]
 }
 
-const FORMATO_DATA = /^\d{4}-\d{2}-\d{2}$/
+// O id vira segmento de URL. Com acento, espaço, "/" ou "%", o params chega
+// percent-encoded na página e decodificado no generateMetadata — a notícia vira
+// 404 silenciosa.
+const FORMATO_ID = /^[a-z0-9-]+$/
 
-// Em produção o CSV fica 5 min no Data Cache.
-// Em dev, 0 = sem cache
-// e uma edição na planilha só aparece 5 min depois.
+// Em produção o CSV fica 5 min no Data Cache; em dev, sem cache.
 const REVALIDATE = process.env.NODE_ENV === 'development' ? 0 : 300
 
-function parseCsv(texto: string): string[][] {
-  const linhas: string[][] = []
-  let campo = ''
-  let linha: string[] = []
-  let dentroDeAspas = false
+const COLUNAS_OBRIGATORIAS = [
+  'id',
+  'titulo',
+  'imagemCapa',
+  'data',
+  'conteudo',
+  'publicada',
+] as const
 
-  for (let i = 0; i < texto.length; i++) {
-    const char = texto[i]
-
-    if (dentroDeAspas) {
-      if (char === '"' && texto[i + 1] === '"') {
-        campo += '"'
-        i++
-      } else if (char === '"') {
-        dentroDeAspas = false
-      } else {
-        campo += char
-      }
-      continue
-    }
-
-    if (char === '"') {
-      dentroDeAspas = true
-    } else if (char === ',') {
-      linha.push(campo)
-      campo = ''
-    } else if (char === '\n' || char === '\r') {
-      if (char === '\r' && texto[i + 1] === '\n') i++
-      linha.push(campo)
-      linhas.push(linha)
-      linha = []
-      campo = ''
-    } else {
-      campo += char
-    }
-  }
-  if (campo !== '' || linha.length > 0) {
-    linha.push(campo)
-    linhas.push(linha)
-  }
-
-  return linhas.filter((l) => l.some((c) => c.trim() !== ''))
+// Só o que o next.config.ts libera pro next/image: host de fora não falha o
+// build, estoura no render do servidor.
+function imagemOk(url: string): boolean {
+  return url === '' || url.startsWith(CLOUDINARY_BASE)
 }
 
-function normalizar(texto: string): string {
-  return texto.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+// Valida formato E existência: "2026-13-45" e "2026-02-30" caem fora. Data
+// inexistente faz o Intl lançar RangeError e derruba o build.
+function dataValida(data: string): boolean {
+  const quando = new Date(`${data}T00:00:00Z`)
+  // getTime primeiro: toISOString() lança RangeError em data inválida
+  return !Number.isNaN(quando.getTime()) && quando.toISOString().slice(0, 10) === data
 }
 
-function acharIndice(
-  cabecalho: string[],
-  predicado: (coluna: string) => boolean
-): number {
-  return cabecalho.findIndex((coluna) => predicado(normalizar(coluna)))
-}
-
-/*
- Notícias e eventos publicados, da mais recente para a mais antiga.
- Uma linha só entra na lista se tiver `publicada = SIM` e todos os campos
- obrigatórios preenchidos (id, titulo, data, imagem_capa, conteudo). Linha
- incompleta é ignorada
- */
-export async function getNoticias(): Promise<Noticia[]> {
+// Publicadas, da mais recente para a mais antiga; linha incompleta é ignorada.
+// `cache()` é necessário porque passar `signal` ao fetch desliga a memoização
+// dele — sem isso o CSV é baixado e reparseado a cada chamada.
+export const getNoticias = cache(async function getNoticias(): Promise<Noticia[]> {
   const url = process.env.NOTICIAS_SHEET_CSV_URL
   if (!url) return []
 
@@ -95,10 +66,14 @@ export async function getNoticias(): Promise<Noticia[]> {
       next: { revalidate: REVALIDATE },
       signal: AbortSignal.timeout(10_000),
     })
-    if (!res.ok) return []
+    if (!res.ok) {
+      console.error(`[noticias] planilha respondeu ${res.status}`)
+      return []
+    }
     texto = await res.text()
-  } catch {
-    // Planilha fora do ar ou timeout: a seção da Home não aparece
+  } catch (erro) {
+    // Sem o log, ninguém descobre que o site subiu sem notícia nenhuma.
+    console.error('[noticias] falha ao buscar a planilha:', erro)
     return []
   }
 
@@ -106,42 +81,68 @@ export async function getNoticias(): Promise<Noticia[]> {
   if (!cabecalho) return []
 
   const indices = {
-    id: acharIndice(cabecalho, (c) => c === 'id'),
-    titulo: acharIndice(cabecalho, (c) => c.startsWith('titulo')),
-    descricao: acharIndice(cabecalho, (c) => c.startsWith('descricao')),
-    imagemCapa: acharIndice(cabecalho, (c) => c.includes('capa')),
-    imagemConteudo: acharIndice(
-      cabecalho,
-      (c) => c.includes('imagem') && c.includes('conteudo')
-    ),
-    imagemDestaque: acharIndice(cabecalho, (c) => c.includes('destaque')),
-    data: acharIndice(cabecalho, (c) => c === 'data'),
-    conteudo: acharIndice(cabecalho, (c) => c === 'conteudo'),
-    publicada: acharIndice(cabecalho, (c) => c.startsWith('publicada')),
+    id: acharColuna(cabecalho, 'id'),
+    titulo: acharColuna(cabecalho, 'titulo'),
+    descricao: acharColuna(cabecalho, 'descricao'),
+    imagemCapa: acharColuna(cabecalho, 'imagem_capa'),
+    imagemCapaAlt: acharColuna(cabecalho, 'imagem_capa_alt'),
+    imagemConteudo: acharColuna(cabecalho, 'imagem_conteudo'),
+    imagemConteudoAlt: acharColuna(cabecalho, 'imagem_conteudo_alt'),
+    imagemDestaque: acharColuna(cabecalho, 'imagem_destaque'),
+    imagemDestaqueAlt: acharColuna(cabecalho, 'imagem_destaque_alt'),
+    data: acharColuna(cabecalho, 'data'),
+    conteudo: acharColuna(cabecalho, 'conteudo'),
+    publicada: acharColuna(cabecalho, 'publicada'),
   }
 
-  return linhas
-    .filter((linha) => normalizar(linha[indices.publicada] ?? '') === 'sim')
+  // Typo no cabeçalho descartaria todas as linhas em silêncio.
+  for (const nome of COLUNAS_OBRIGATORIAS) {
+    if (indices[nome] === -1)
+      console.warn(`[noticias] coluna obrigatória "${nome}" não encontrada no cabeçalho`)
+  }
+
+  const celula = (linha: string[], indice: number) => (linha[indice] ?? '').trim()
+
+  const noticias = linhas
+    .filter((linha) => chaveDeColuna(celula(linha, indices.publicada)) === 'sim')
     .map((linha) => ({
-      id: (linha[indices.id] ?? '').trim(),
-      titulo: (linha[indices.titulo] ?? '').trim(),
-      descricao: (linha[indices.descricao] ?? '').trim(),
-      imagemCapa: (linha[indices.imagemCapa] ?? '').trim(),
-      imagemConteudo: (linha[indices.imagemConteudo] ?? '').trim(),
-      imagemDestaque: (linha[indices.imagemDestaque] ?? '').trim(),
-      data: (linha[indices.data] ?? '').trim(),
-      conteudo: (linha[indices.conteudo] ?? '').trim(),
+      id: celula(linha, indices.id),
+      titulo: celula(linha, indices.titulo),
+      descricao: celula(linha, indices.descricao),
+      imagemCapa: celula(linha, indices.imagemCapa),
+      imagemCapaAlt: celula(linha, indices.imagemCapaAlt),
+      imagemConteudo: celula(linha, indices.imagemConteudo),
+      imagemConteudoAlt: celula(linha, indices.imagemConteudoAlt),
+      imagemDestaque: celula(linha, indices.imagemDestaque),
+      imagemDestaqueAlt: celula(linha, indices.imagemDestaqueAlt),
+      data: celula(linha, indices.data),
+      conteudo: celula(linha, indices.conteudo),
     }))
     .filter(
       (noticia) =>
-        noticia.id !== '' &&
+        FORMATO_ID.test(noticia.id) &&
         noticia.titulo !== '' &&
         noticia.imagemCapa !== '' &&
         noticia.conteudo !== '' &&
-        FORMATO_DATA.test(noticia.data)
+        dataValida(noticia.data) &&
+        imagemOk(noticia.imagemCapa) &&
+        imagemOk(noticia.imagemConteudo) &&
+        imagemOk(noticia.imagemDestaque)
     )
     .sort((a, b) => b.data.localeCompare(a.data))
-}
+
+  // O Next deduplica params repetidos em silêncio e a segunda notícia fica
+  // inalcançável. A mais recente vence — um Map guardaria a última.
+  const vistos = new Set<string>()
+  return noticias.filter((noticia) => {
+    if (vistos.has(noticia.id)) {
+      console.warn(`[noticias] id duplicado na planilha: "${noticia.id}"`)
+      return false
+    }
+    vistos.add(noticia.id)
+    return true
+  })
+})
 
 export async function getNoticia(id: string): Promise<Noticia | null> {
   const noticias = await getNoticias()
@@ -165,28 +166,50 @@ export function formatarMes(data: string): string {
     .replace('.', '')
 }
 
+export function formatarAno(data: string): string {
+  return new Intl.DateTimeFormat('pt-BR', { year: 'numeric', timeZone: 'UTC' }).format(
+    paraData(data)
+  )
+}
+
 export function formatarDataCompleta(data: string): string {
   return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeZone: 'UTC' }).format(
     paraData(data)
   )
 }
 
-/** Divide o campo `conteudo` nos subcapítulos marcados com "##". */
+// Linhas seguidas são o mesmo parágrafo; só linha em branco começa outro. Quem
+// escreve na planilha quebra linha para caber na célula, não para separar texto.
 export function parseConteudo(conteudo: string): BlocoConteudo[] {
   const blocos: BlocoConteudo[] = []
   let atual: BlocoConteudo = { titulo: '', paragrafos: [] }
+  let linhasDoParagrafo: string[] = []
+
+  const fecharParagrafo = () => {
+    if (linhasDoParagrafo.length > 0) {
+      atual.paragrafos.push(linhasDoParagrafo.join(' '))
+      linhasDoParagrafo = []
+    }
+  }
+
+  const fecharBloco = () => {
+    fecharParagrafo()
+    if (atual.titulo !== '' || atual.paragrafos.length > 0) blocos.push(atual)
+  }
 
   for (const linha of conteudo.split('\n')) {
     const texto = linha.trim()
 
     if (texto.startsWith('##')) {
-      if (atual.titulo !== '' || atual.paragrafos.length > 0) blocos.push(atual)
+      fecharBloco()
       atual = { titulo: texto.replace(/^#+/, '').trim(), paragrafos: [] }
-    } else if (texto !== '') {
-      atual.paragrafos.push(texto)
+    } else if (texto === '') {
+      fecharParagrafo()
+    } else {
+      linhasDoParagrafo.push(texto)
     }
   }
 
-  if (atual.titulo !== '' || atual.paragrafos.length > 0) blocos.push(atual)
+  fecharBloco()
   return blocos
 }
