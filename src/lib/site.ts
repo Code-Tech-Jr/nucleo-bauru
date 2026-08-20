@@ -7,4 +7,6 @@ export const NAV_LINKS = [
   { href: '/#eventos-e-noticias', label: 'Eventos e Notícias' },
 ] as const
 
+// TODO(resend): e-mail oficial do Núcleo — usado no Footer e como destino padrão
+// do formulário quando CONTATO_EMAIL_TO não está definida
 export const EMAIL = 'presidencia@nucleobauru.com.br'
