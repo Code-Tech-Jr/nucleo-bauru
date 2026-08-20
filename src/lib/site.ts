@@ -7,6 +7,8 @@ export const NAV_LINKS = [
   { href: '/noticias-e-eventos', label: 'Eventos e Notícias' },
 ] as const
 
+// TODO(resend): e-mail oficial do Núcleo — usado no Footer e como destino padrão
+// do formulário quando CONTATO_EMAIL_TO não está definida
 export const EMAIL = 'presidencia@nucleobauru.com.br'
 
 // Precisa bater com o remotePatterns do next.config.ts: o que passar daqui sem
