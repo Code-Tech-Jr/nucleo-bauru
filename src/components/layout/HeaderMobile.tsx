@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Menu, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
-import { EMAIL } from '@/lib/site'
 
 export default function HeaderMobile({ links }: { links: ReactNode }) {
   const [open, setOpen] = useState(false)
@@ -52,7 +51,6 @@ export default function HeaderMobile({ links }: { links: ReactNode }) {
         <Menu className="size-8" />
       </button>
 
-      {/* Fundo escurecido do menu mobile */}
       <div
         onClick={() => setOpen(false)}
         aria-hidden
@@ -80,12 +78,11 @@ export default function HeaderMobile({ links }: { links: ReactNode }) {
           <X className="size-8" />
         </button>
 
-        {/* Clicar em qualquer link fecha o menu */}
         <ul onClick={() => setOpen(false)} className="flex flex-col items-start gap-6">
           {links}
         </ul>
 
-        <Button href={`mailto:${EMAIL}`} variant="solid" showArrow className="self-start">
+        <Button href="/#contato" variant="solid" showArrow className="self-start">
           Fale conosco
         </Button>
       </div>

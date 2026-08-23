@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Container from '@/components/ui/Container'
 import Content from '@/components/ui/Content'
-import { EMAIL, NAV_LINKS } from '@/lib/site'
+import { NAV_LINKS } from '@/lib/site'
 import HeaderMobile from './HeaderMobile'
 
 export default function Header() {
@@ -46,7 +46,7 @@ export default function Header() {
         <ul className="hidden items-center gap-8 lg:flex">{links}</ul>
 
         <Button
-          href={`mailto:${EMAIL}`}
+          href="/#contato"
           variant="solid"
           showArrow
           className="hidden lg:inline-flex"
