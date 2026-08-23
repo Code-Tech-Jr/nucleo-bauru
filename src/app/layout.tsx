@@ -27,7 +27,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className={`${openSans.variable} h-full antialiased`}>
+    <html
+      lang="pt-BR"
+      className={`${openSans.variable} h-full antialiased motion-safe:scroll-smooth`}
+    >
       <body className="flex min-h-full flex-col">
         <a
           href="#conteudo"
