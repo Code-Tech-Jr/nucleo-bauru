@@ -7,7 +7,7 @@ const LOGO = '/parceiros/parque-tecnologico-botucatu.png'
 
 export default function CardParceiro({ className }: { className?: string }) {
   return (
-    <div className={cn('flex flex-col gap-6', className)}>
+    <div id="parceiros" className={cn('flex scroll-mt-24 flex-col gap-6', className)}>
       <Heading variant="section" className="text-blue">
         Parceiro oficial
         <br />

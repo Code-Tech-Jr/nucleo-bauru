@@ -66,9 +66,16 @@ function MissaoVisaoValores() {
             <Heading variant="content" as="h3" className="text-xl lg:text-2xl">
               {titulo}
             </Heading>
-            <Image src={icone} alt="" width={48} height={48} className="h-12 w-12" />
+            <Image
+              src={icone}
+              alt=""
+              width={48}
+              height={48}
+              unoptimized
+              className="h-12 w-12"
+            />
           </div>
-          <Text variant="dark" className="text-justify text-base">
+          <Text variant="dark" className="text-base">
             {texto}
           </Text>
         </li>
@@ -85,6 +92,7 @@ function Pilares() {
         alt=""
         width={220}
         height={220}
+        unoptimized
         className="w-40 shrink-0 lg:w-56"
       />
 
@@ -118,6 +126,7 @@ function RedeENoticias() {
           alt="Mapa de São Paulo com a rede de Empresas Juniores do Núcleo Bauru"
           width={420}
           height={420}
+          unoptimized
           className="mx-auto w-full max-w-[280px]"
         />
 
@@ -149,7 +158,7 @@ function RedeENoticias() {
         </ul>
 
         <Button
-          href="#"
+          href="/noticias-e-eventos"
           variant="light"
           showArrow
           className="self-end text-sm font-bold text-orange"
@@ -172,7 +181,7 @@ function Resultado() {
           Somos a Evolução!
         </Heading>
 
-        <Text variant="light" className="max-w-lg text-justify">
+        <Text variant="light" className="max-w-lg">
           No ano de 2025, mais de 240 soluções entregues e toda a verba revertida em
           educação e desenvolvimento da rede do Núcleo Bauru.
         </Text>
@@ -184,9 +193,10 @@ function Resultado() {
 
       <Image
         src="/logos/logo_chama.svg"
-        alt="Símbolo do Núcleo Bauru"
+        alt=""
         width={220}
         height={220}
+        unoptimized
         className="hidden w-40 shrink-0 lg:block"
       />
     </div>
