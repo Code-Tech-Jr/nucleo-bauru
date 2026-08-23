@@ -19,6 +19,7 @@ import Content from '@/components/ui/Content'
 import Container from '@/components/ui/Container'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
+import Resultado from '@/components/sections/home/Resultado'
 
 const Map = dynamic(() => import('./map/Map'), {
   ssr: false,
@@ -155,6 +156,12 @@ export default function NossaRedeCliente({
               )}
             </div>
           </div>
+        </Content>
+      </Container>
+
+      <Container as="section" className="mb-15">
+        <Content>
+          <Resultado />
         </Content>
       </Container>
     </main>
