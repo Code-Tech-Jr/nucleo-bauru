@@ -33,7 +33,7 @@ export default function Hero() {
             <span className="text-orange">legado</span>
           </Heading>
 
-          <Text variant="light" className="text-justify md:max-w-lg">
+          <Text variant="light" className="md:max-w-lg">
             Conectamos Empresas Juniores, desenvolvemos lideranças e fortalecemos o
             Movimento Empresa Júnior no Oeste Paulista. Aqui, pessoas encontram propósito,
             criam conexões e geram impacto que ultrapassa a universidade.
@@ -65,6 +65,7 @@ export default function Hero() {
             alt="Equipe do Núcleo Bauru reunida"
             width={640}
             height={640}
+            sizes="(max-width: 768px) 100vw, 360px"
             className="relative z-10 w-full rounded-3xl object-cover"
           />
         </div>

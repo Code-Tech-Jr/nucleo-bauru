@@ -18,11 +18,11 @@ export default function QuemSomosHome() {
             Quem somos
           </Heading>
 
-          <Heading variant="content">
+          <Heading variant="content" as="p">
             A força que desenvolve o Movimento Empresa Júnior no Oeste Paulista.
           </Heading>
 
-          <Text variant="dark" className="text-justify">
+          <Text variant="dark">
             Nascemos para fortalecer o MEJ no Oeste Paulista. Conectamos pessoas,
             desenvolvemos lideranças e impulsionamos Empresas Juniores, gerando impacto
             dentro das universidades.
