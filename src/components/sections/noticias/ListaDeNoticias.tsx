@@ -36,7 +36,9 @@ export default async function ListaDeNoticias({ pagina }: { pagina: number }) {
           {daPagina.length === 0 ? (
             <Text variant="dark">Nenhuma notícia publicada por enquanto.</Text>
           ) : (
-            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            // auto-fit + max de 300px + justify-center: com 1–2 itens os cards
+            // ficam centralizados em vez de colados à esquerda com vazio à direita
+            <ul className="grid grid-cols-[repeat(auto-fit,minmax(240px,300px))] justify-center gap-6">
               {daPagina.map((noticia) => (
                 <li key={noticia.id}>
                   <NoticiaCardGrade noticia={noticia} />
