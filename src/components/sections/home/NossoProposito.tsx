@@ -4,6 +4,10 @@ import Container from '@/components/ui/Container'
 import Content from '@/components/ui/Content'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
+import NoticiaCard from '@/components/sections/noticias/NoticiaCard'
+import { getNoticias, type Noticia } from '@/lib/getNoticias'
+
+const NOTICIAS_NA_HOME = 3
 
 const MVV = [
   {
@@ -32,26 +36,6 @@ const PILARES = [
   'Somos a brasa que incendeia o MEJ Paulista',
   'Construímos Chamas que não se apagam',
   'A rede SEMPRE será a resposta',
-]
-
-// TODO(conteudo): substituir pelos eventos e notícias reais assim que o time
-// de conteúdo definir de onde eles vêm (CMS, planilha, etc.)
-const NOTICIAS = [
-  {
-    data: 'Em breve',
-    titulo: 'Novidades do Núcleo',
-    resumo: 'Em breve, novidades por aqui.',
-  },
-  {
-    data: 'Em breve',
-    titulo: 'Novidades do Núcleo',
-    resumo: 'Em breve, novidades por aqui.',
-  },
-  {
-    data: 'Em breve',
-    titulo: 'Novidades do Núcleo',
-    resumo: 'Em breve, novidades por aqui.',
-  },
 ]
 
 function MissaoVisaoValores() {
@@ -110,7 +94,7 @@ function Pilares() {
   )
 }
 
-function RedeENoticias() {
+function RedeENoticias({ noticias }: { noticias: Noticia[] }) {
   return (
     <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-10">
       <div className="flex flex-col items-start gap-4 rounded-3xl border border-blue/15 p-6 shadow-card lg:p-8">
@@ -143,25 +127,25 @@ function RedeENoticias() {
           Eventos e Notícias
         </Heading>
 
-        <ul className="flex flex-col gap-5">
-          {NOTICIAS.map((noticia, indice) => (
-            <li key={indice} className="flex items-center gap-4 text-left">
-              <span className="flex h-15 w-15 shrink-0 items-center justify-center rounded-lg bg-orange text-xs font-bold text-white uppercase">
-                {noticia.data}
-              </span>
-              <div>
-                <p className="font-extrabold text-blue">{noticia.titulo}</p>
-                <p className="text-sm text-blue/70">{noticia.resumo}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        {noticias.length === 0 ? (
+          <Text variant="dark" className="text-blue/70">
+            Em breve, novidades por aqui.
+          </Text>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {noticias.map((noticia) => (
+              <li key={noticia.id}>
+                <NoticiaCard noticia={noticia} />
+              </li>
+            ))}
+          </ul>
+        )}
 
         <Button
           href="/noticias-e-eventos"
           variant="light"
           showArrow
-          className="self-end text-sm font-bold text-orange"
+          className="mt-auto self-end text-sm font-bold text-orange"
         >
           Todas as Notícias
         </Button>
@@ -203,7 +187,9 @@ function Resultado() {
   )
 }
 
-export default function NossoProposito() {
+export default async function NossoProposito() {
+  const noticias = (await getNoticias()).slice(0, NOTICIAS_NA_HOME)
+
   return (
     <Container
       as="section"
@@ -222,7 +208,7 @@ export default function NossoProposito() {
 
         <MissaoVisaoValores />
         <Pilares />
-        <RedeENoticias />
+        <RedeENoticias noticias={noticias} />
         <Resultado />
       </Content>
     </Container>
