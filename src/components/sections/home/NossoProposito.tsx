@@ -5,6 +5,7 @@ import Content from '@/components/ui/Content'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import NoticiaCard from '@/components/sections/noticias/NoticiaCard'
+import Resultado from './Resultado'
 import { getNoticias, type Noticia } from '@/lib/getNoticias'
 
 const NOTICIAS_NA_HOME = 3
@@ -114,7 +115,12 @@ function RedeENoticias({ noticias }: { noticias: Noticia[] }) {
           className="mx-auto w-full max-w-[280px]"
         />
 
-        <Button href="/nossa-rede" variant="light" showArrow>
+        <Button
+          href="/nossa-rede"
+          variant="light"
+          showArrow
+          className="mt-auto self-end text-sm font-bold text-orange"
+        >
           Conheça nossa rede
         </Button>
       </div>
@@ -154,39 +160,6 @@ function RedeENoticias({ noticias }: { noticias: Noticia[] }) {
   )
 }
 
-function Resultado() {
-  return (
-    <div className="flex w-full flex-col items-center gap-10 rounded-3xl bg-blue px-6 py-10 text-left lg:flex-row lg:justify-between lg:gap-16 lg:px-16 lg:py-14">
-      <div className="flex flex-col items-start gap-4">
-        <Heading variant="section" as="h3">
-          Resultado
-        </Heading>
-        <Heading variant="hero" as="p" className="text-4xl lg:text-5xl">
-          Somos a Evolução!
-        </Heading>
-
-        <Text variant="light" className="max-w-lg">
-          No ano de 2025, mais de 240 soluções entregues e toda a verba revertida em
-          educação e desenvolvimento da rede do Núcleo Bauru.
-        </Text>
-
-        <Button href="/#contato" variant="solid" showArrow>
-          Contrate uma EJ
-        </Button>
-      </div>
-
-      <Image
-        src="/logos/logo_chama.svg"
-        alt=""
-        width={220}
-        height={220}
-        unoptimized
-        className="hidden w-40 shrink-0 lg:block"
-      />
-    </div>
-  )
-}
-
 export default async function NossoProposito() {
   const noticias = (await getNoticias()).slice(0, NOTICIAS_NA_HOME)
 
@@ -201,7 +174,7 @@ export default async function NossoProposito() {
           <Heading variant="section" id="titulo-nosso-proposito">
             Nosso propósito
           </Heading>
-          <Heading variant="content" as="p" className="max-w-2xl">
+          <Heading variant="content" as="p" className="font-bold md:whitespace-nowrap">
             Transformar o Brasil em um país empreendedor.
           </Heading>
         </div>
