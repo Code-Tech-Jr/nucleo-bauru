@@ -16,4 +16,6 @@ export const EMAIL = 'presidencia@nucleobauru.com.br'
 export const CLOUDINARY_BASE = 'https://res.cloudinary.com/bu6xbdjg/'
 
 // metadataBase (canonical e og:url). Em produção, defina NEXT_PUBLIC_SITE_URL.
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nucleobauru.com.br'
+// || e não ??: a var pode vir "" (definida e vazia, como no .env.example), e ""
+// passa pelo ?? mas quebra o new URL() do metadataBase.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://nucleobauru.com.br'
