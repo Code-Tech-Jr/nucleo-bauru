@@ -1,9 +1,17 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Container from '@/components/ui/Container'
 import Content from '@/components/ui/Content'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import Timeline from '@/components/sections/Timeline'
+
+export const metadata: Metadata = {
+  title: 'Sobre o Núcleo',
+  description:
+    'A história do Núcleo Bauru, do NEJunesp (2006) ao Movimento Empresa Júnior no Oeste Paulista.',
+  alternates: { canonical: '/sobre-nos' },
+}
 
 export default function SobreNos() {
   return (

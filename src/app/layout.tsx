@@ -19,6 +19,13 @@ export const metadata: Metadata = {
     template: '%s | Núcleo Bauru',
   },
   description: 'Núcleo Bauru — Movimento Empresa Júnior no Oeste Paulista.',
+  // og:title e og:description saem do title/description de cada página
+  openGraph: {
+    type: 'website',
+    siteName: 'Núcleo Bauru',
+    locale: 'pt_BR',
+    url: '/',
+  },
 }
 
 export default function RootLayout({
