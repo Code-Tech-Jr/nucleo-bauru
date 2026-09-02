@@ -17,8 +17,10 @@ import { EMAIL } from '@/lib/site'
 // entrega pro e-mail dono da conta Resend, serve pra testar).
 // TODO(resend): valores vêm do .env.local (local) e do painel da Vercel (produção).
 // Sem CONTATO_EMAIL_FROM cai no onboarding@resend.dev, que só entrega pro dono da conta.
-const REMETENTE = process.env.CONTATO_EMAIL_FROM ?? 'onboarding@resend.dev'
-const DESTINO = process.env.CONTATO_EMAIL_TO ?? EMAIL
+// || e não ??: a env pode vir definida e vazia (""), que passa pelo ?? e
+// deixaria remetente/destino em branco — aí o Resend recusa o envio.
+const REMETENTE = process.env.CONTATO_EMAIL_FROM || 'onboarding@resend.dev'
+const DESTINO = process.env.CONTATO_EMAIL_TO || EMAIL
 
 const ERRO_GENERICO = 'Não conseguimos enviar sua mensagem agora.'
 
