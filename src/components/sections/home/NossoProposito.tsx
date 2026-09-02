@@ -1,0 +1,189 @@
+import Image from 'next/image'
+import Button from '@/components/ui/Button'
+import Container from '@/components/ui/Container'
+import Content from '@/components/ui/Content'
+import Heading from '@/components/ui/Heading'
+import Text from '@/components/ui/Text'
+import NoticiaCard from '@/components/sections/noticias/NoticiaCard'
+import Resultado from './Resultado'
+import { getNoticias, type Noticia } from '@/lib/getNoticias'
+
+const NOTICIAS_NA_HOME = 3
+
+const MVV = [
+  {
+    titulo: 'Missão',
+    icone: '/elementos/missão.svg',
+    texto:
+      'Evoluir a organização e ampliar o acesso à vivência empresarial, formando lideranças comprometidas e capazes de potencializar os resultados para que a Força do Interior impacte em um Brasil mais empreendedor.',
+  },
+  {
+    titulo: 'Visão',
+    icone: '/elementos/visao.svg',
+    texto:
+      'Ser um Núcleo referência pela excelência construída através de uma rede forte, sustentável e protagonista.',
+  },
+  {
+    titulo: 'Valores',
+    icone: '/elementos/valores.svg',
+    texto:
+      'Mais do que princípios, eles refletem nossa essência: é aquilo que nos une, direciona nossas escolhas e dá sentido ao nosso movimento.',
+  },
+]
+
+const PILARES = [
+  'Batemos Metas Noite e Dia',
+  'Temos orgulho de ser do Interior',
+  'Somos a brasa que incendeia o MEJ Paulista',
+  'Construímos Chamas que não se apagam',
+  'A rede SEMPRE será a resposta',
+]
+
+function MissaoVisaoValores() {
+  return (
+    <ul className="grid w-full grid-cols-1 gap-6 lg:grid-cols-3">
+      {MVV.map(({ titulo, icone, texto }) => (
+        <li
+          key={titulo}
+          className="flex flex-col gap-4 rounded-3xl border border-blue/15 p-6 text-left shadow-card transition-transform duration-300 hover:-translate-y-1 lg:p-8"
+        >
+          <div className="flex items-center justify-between">
+            <Heading variant="content" as="h3" className="text-xl lg:text-2xl">
+              {titulo}
+            </Heading>
+            <Image
+              src={icone}
+              alt=""
+              width={48}
+              height={48}
+              unoptimized
+              className="h-12 w-12"
+            />
+          </div>
+          <Text variant="dark" className="text-base">
+            {texto}
+          </Text>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function Pilares() {
+  return (
+    <div className="relative flex w-full flex-col items-center gap-8 overflow-hidden rounded-3xl bg-blue px-6 py-10 lg:flex-row lg:items-center lg:gap-16 lg:px-16 lg:py-16">
+      <Image
+        src="/elementos/chaminha.svg"
+        alt=""
+        width={220}
+        height={220}
+        unoptimized
+        className="w-40 shrink-0 lg:w-56"
+      />
+
+      <ol className="flex w-full flex-col gap-4 text-left lg:columns-2 lg:gap-x-10">
+        {PILARES.map((pilar, indice) => (
+          <li
+            key={pilar}
+            className="break-inside-avoid text-lg leading-relaxed font-bold text-white lg:text-xl"
+          >
+            {indice + 1}. {pilar}
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+function RedeENoticias({ noticias }: { noticias: Noticia[] }) {
+  return (
+    <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-2 lg:items-stretch lg:gap-10">
+      <div className="flex flex-col items-start gap-4 rounded-3xl border border-blue/15 p-6 shadow-card lg:p-8">
+        <Heading variant="section" as="h3">
+          Nossa Rede
+        </Heading>
+        <Heading variant="content" as="p" className="text-xl">
+          Encontre a EJ mais próxima de você
+        </Heading>
+
+        <Image
+          src="/elementos/mapa_home.svg"
+          alt="Mapa de São Paulo com a rede de Empresas Juniores do Núcleo Bauru"
+          width={420}
+          height={420}
+          unoptimized
+          className="mx-auto w-full max-w-[280px]"
+        />
+
+        <Button
+          href="/nossa-rede"
+          variant="light"
+          showArrow
+          className="mt-auto self-end text-sm font-bold text-orange"
+        >
+          Conheça nossa rede
+        </Button>
+      </div>
+
+      <div
+        id="eventos-e-noticias"
+        className="flex scroll-mt-24 flex-col gap-6 rounded-3xl border border-blue/15 p-6 shadow-card lg:p-8"
+      >
+        <Heading variant="section" as="h3">
+          Eventos e Notícias
+        </Heading>
+
+        {noticias.length === 0 ? (
+          <Text variant="dark" className="text-blue/70">
+            Em breve, novidades por aqui.
+          </Text>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {noticias.map((noticia) => (
+              <li key={noticia.id}>
+                <NoticiaCard noticia={noticia} />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <Button
+          href="/noticias-e-eventos"
+          variant="light"
+          showArrow
+          className="mt-auto self-end text-sm font-bold text-orange"
+        >
+          Todas as Notícias
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+export default async function NossoProposito() {
+  const noticias = (await getNoticias()).slice(0, NOTICIAS_NA_HOME)
+
+  return (
+    <Container
+      as="section"
+      aria-labelledby="titulo-nosso-proposito"
+      className="py-16 lg:py-20"
+    >
+      <Content className="flex-col items-stretch gap-14 lg:gap-16">
+        <div className="flex flex-col items-center gap-3 border-t-2 border-orange pt-8 text-center lg:border-none lg:pt-0">
+          <Heading variant="section" id="titulo-nosso-proposito">
+            Nosso propósito
+          </Heading>
+          <Heading variant="content" as="p" className="font-bold md:whitespace-nowrap">
+            Transformar o Brasil em um país empreendedor.
+          </Heading>
+        </div>
+
+        <MissaoVisaoValores />
+        <Pilares />
+        <RedeENoticias noticias={noticias} />
+        <Resultado />
+      </Content>
+    </Container>
+  )
+}

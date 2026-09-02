@@ -28,8 +28,16 @@ yarn-error.log*
 .env*.local
 .env
 
+# vscode (mantém settings.json compartilhado, ignora config pessoal)
+.vscode/*
+!.vscode/settings.json
+
+# claude code
+.claude/
+
 # vercel
 .vercel
+
 
 # typescript
 *.tsbuildinfo
