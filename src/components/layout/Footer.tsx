@@ -31,7 +31,7 @@ const REDES: {
     Icone: FaFacebookF,
   },
   {
-    href: 'https://www.linkedin.com/company/nucleobauru',
+    href: 'https://www.linkedin.com/company/nucleo-bauru/',
     label: 'LinkedIn',
     Icone: FaLinkedinIn,
   },
@@ -47,7 +47,7 @@ const INSTITUCIONAL = [
   { href: '/sobre-nos#missao-visao-valores', label: 'Missão, Visão e Valores' },
 ]
 
-const TELEFONE = '(00)0000-0000'
+const TELEFONE = '+55 19 97115-2345'
 
 // slot fixo para os ícones de contato, para o texto alinhar entre as linhas
 const SLOT_ICONE = 'flex h-9 w-9 shrink-0 items-center justify-center'
@@ -137,7 +137,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href={`tel:${TELEFONE.replace(/\D/g, '')}`}
+                    href={`tel:+${TELEFONE.replace(/\D/g, '')}`}
                     className={`group flex items-center gap-3 ${LINK_CLASSES}`}
                   >
                     <span
