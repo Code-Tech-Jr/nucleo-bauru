@@ -44,7 +44,7 @@ const REDES: {
 
 const INSTITUCIONAL = [
   { href: '/sobre-nos#quem-somos', label: 'Quem somos' },
-  { href: '/sobre-nos#missao-visao-valores', label: 'Missão, Visão e Valores' },
+  { href: '/#titulo-nosso-proposito', label: 'Missão, Visão e Valores' },
 ]
 
 const TELEFONE = '+55 19 97115-2345'
