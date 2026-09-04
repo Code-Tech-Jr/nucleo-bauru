@@ -48,7 +48,7 @@ const SECOES = [
   {
     titulo: 'Seus direitos (LGPD)',
     texto:
-      'A Lei Geral de Proteção de Dados garante a você confirmar a existência do tratamento, acessar os seus dados, corrigi-los, pedir a anonimização ou a exclusão e revogar o consentimento a qualquer momento.',
+      'A Lei nº 13.709 - Lei Geral de Proteção de Dados garante a você confirmar a existência do tratamento, acessar os seus dados, corrigi-los, pedir a anonimização ou a exclusão e revogar o consentimento a qualquer momento.',
   },
   {
     titulo: 'Como exercer os seus direitos',

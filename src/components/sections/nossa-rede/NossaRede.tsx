@@ -104,11 +104,11 @@ export default function NossaRedeCliente({
           </Heading>
           <div className="flex flex-col gap-4">
             <Text variant={'dark'} className="text-justify">
-              O Núcleo Bauru é formado por uma rede de Empresas Juniores da Unesp que
-              acreditam no empreendedorismo como ferramenta de transformação. Cada EJ atua
-              em sua área de conhecimento, desenvolvendo projetos reais para clientes e
-              proporcionando aos universitários uma vivência prática em gestão, liderança,
-              inovação e impacto. Mais do que organizações independentes, nossas empresas
+              O Núcleo Bauru é formado por uma rede de Empresas Juniores que acreditam no
+              empreendedorismo como ferramenta de transformação. Cada EJ atua em sua área
+              de conhecimento, desenvolvendo projetos reais para clientes e proporcionando
+              aos universitários uma vivência prática em gestão, liderança, inovação e
+              impacto. Mais do que organizações independentes, nossas empresas
               compartilham um mesmo propósito: formar líderes capazes de gerar resultados
               para a sociedade.
             </Text>
