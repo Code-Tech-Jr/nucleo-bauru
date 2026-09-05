@@ -131,8 +131,8 @@ export default function SobreNos() {
             </Text>
 
             <Text className="text-justify">
-              Em 2016, é aprovada a Lei 13.264, que disciplina a criação e organização de
-              todas as EJs do Brasil. Hoje existem em torno de 350 Empresas Juniores por
+              Em 2016, é aprovada a Lei 13.267, que disciplina a criação e organização de
+              todas as EJs do Brasil. Hoje existem em torno de 1500 Empresas Juniores por
               todo o país, nas mais diversas áreas de atuação.
             </Text>
           </div>
