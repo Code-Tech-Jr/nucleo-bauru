@@ -38,6 +38,10 @@ export const metadata: Metadata = {
     title: 'Núcleo Bauru',
     description: 'Núcleo Bauru — Movimento Empresa Júnior no Oeste Paulista.',
   },
+
+  verification: {
+    google: 'ZciCJ7o0kpeEsGeJbslTlu4u4jbyvvM4nHoQDHC1vwU',
+  },
 }
 
 export default function RootLayout({
