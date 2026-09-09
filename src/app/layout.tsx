@@ -12,19 +12,31 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  // sem metadataBase o canonical e o og:url saem como http://localhost:3000
   metadataBase: new URL(SITE_URL),
+
   title: {
     default: 'Núcleo Bauru',
     template: '%s | Núcleo Bauru',
   },
+
   description: 'Núcleo Bauru — Movimento Empresa Júnior no Oeste Paulista.',
-  // og:title e og:description saem do title/description de cada página
+
+  alternates: {
+    canonical: '/',
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+
   openGraph: {
     type: 'website',
     siteName: 'Núcleo Bauru',
     locale: 'pt_BR',
     url: '/',
+    title: 'Núcleo Bauru',
+    description: 'Núcleo Bauru — Movimento Empresa Júnior no Oeste Paulista.',
   },
 }
 
