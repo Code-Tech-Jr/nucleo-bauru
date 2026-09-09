@@ -10,39 +10,43 @@ import Heading from '@/components/ui/Heading'
 // public/parceiros/universidades já vêm recortadas e sem a margem branca.
 const UNIVERSIDADES = [
   {
-    nome: 'Famema — Faculdade de Medicina de Marília',
-    logo: '/parceiros/universidades/famema.png',
+    nome: 'Unesp — Universidade Estadual Paulista',
+    logo: '/parceiros/universidades/unesp-horizontal.png',
   },
   {
-    nome: 'Fatec — Faculdade de Tecnologia',
-    logo: '/parceiros/universidades/fatec.png',
+    nome: 'USP — Universidade de São Paulo',
+    logo: '/parceiros/universidades/usp.png',
   },
   {
     nome: 'IFSP — Instituto Federal de São Paulo',
     logo: '/parceiros/universidades/ifsp-horizontal.png',
   },
   {
-    nome: 'Unesp — Universidade Estadual Paulista',
-    logo: '/parceiros/universidades/unesp-horizontal.png',
+    nome: 'Fatec — Faculdade de Tecnologia',
+    logo: '/parceiros/universidades/fatec.png',
   },
   {
-    nome: 'Unisagrado — Universidade do Sagrado Coração',
-    logo: '/parceiros/universidades/unisagrado-horizontal.png',
+    nome: 'Famema — Faculdade de Medicina de Marília',
+    logo: '/parceiros/universidades/famema.png',
   },
   {
     nome: 'Unoeste — Universidade do Oeste Paulista',
     logo: '/parceiros/universidades/unoeste.png',
   },
-  { nome: 'USP — Universidade de São Paulo', logo: '/parceiros/universidades/usp.png' },
+  {
+    nome: 'Unisagrado — Universidade do Sagrado Coração',
+    logo: '/parceiros/universidades/unisagrado-horizontal.png',
+  },
 ]
 
 // 45% no mobile de propósito: o terceiro logo fica cortado na borda e denuncia
 // que a faixa rola de lado, já que a barra de rolagem fica escondida.
+// Até 425px cai para 82%: um logo por vez, com uma fatia do próximo aparecendo.
 const SLIDE =
-  'flex shrink-0 basis-[45%] snap-start items-center justify-center px-3 py-4 sm:basis-1/3 sm:px-4 sm:py-6 lg:basis-1/4 lg:px-6 xl:basis-1/5'
+  'flex shrink-0 basis-[82%] snap-start items-center justify-center px-3 py-4 min-[426px]:basis-[45%] sm:basis-1/3 sm:px-4 sm:py-6 lg:basis-1/4 lg:px-6 xl:basis-1/5'
 
 const SETA =
-  'flex size-9 shrink-0 items-center justify-center rounded-full text-blue transition-colors hover:bg-blue/10 disabled:pointer-events-none disabled:opacity-30'
+  'flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-blue transition-colors hover:bg-blue/10 disabled:pointer-events-none disabled:opacity-30'
 
 // Margem de 1px: o navegador arredonda scrollLeft e a última página quase nunca
 // fecha a conta exata com scrollWidth.
@@ -92,7 +96,7 @@ export default function UniversidadesParceiras() {
   return (
     <section
       aria-labelledby="titulo-universidades"
-      className="mb-15 flex w-full flex-col gap-8 rounded-3xl border border-blue/15 px-6 py-8 shadow-card lg:gap-10 lg:px-8 lg:py-12"
+      className="mb-15 flex w-full flex-col gap-8 rounded-3xl py-8 lg:gap-10 lg:py-12"
     >
       <Heading variant="section" id="titulo-universidades">
         Universidades Parceiras
@@ -122,7 +126,7 @@ export default function UniversidadesParceiras() {
                   src={logo}
                   alt={nome}
                   fill
-                  sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 23vw, (min-width: 640px) 30vw, 42vw"
+                  sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 23vw, (min-width: 640px) 30vw, (min-width: 426px) 42vw, 82vw"
                   className="object-contain"
                 />
               </div>
