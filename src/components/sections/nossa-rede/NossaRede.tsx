@@ -15,6 +15,7 @@ import {
 import FiltroEjs from './search/FiltroEjs'
 import ListaEjs from './search/ListaEjs'
 import NossaRedeStats from './stats/NossaRedeStats'
+import UniversidadesParceiras from './universidades/UniversidadesParceiras'
 import Content from '@/components/ui/Content'
 import Container from '@/components/ui/Container'
 import Heading from '@/components/ui/Heading'
@@ -99,6 +100,7 @@ export default function NossaRedeCliente({
       <Container>
         <Content className="flex-col items-stretch gap-8">
           <NossaRedeStats ejs={ejs} />
+          <UniversidadesParceiras />
           <Heading variant={'section'} as="h1">
             NOSSA REDE
           </Heading>
