@@ -70,7 +70,7 @@ export default function CardParceiro({ className }: { className?: string }) {
   return (
     <div id="parceiros" className={cn('flex scroll-mt-24 flex-col gap-6', className)}>
       <Heading variant="section" className="text-blue">
-        Parceiro oficial
+        Parceiros oficiais
         <br />
         do Núcleo
       </Heading>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useReducedMotion } from 'motion/react'
@@ -39,66 +39,32 @@ const UNIVERSIDADES = [
   },
 ]
 
-// Loop infinito: triplicamos a lista e mantemos a rolagem na cópia do meio.
-// Ao passar de uma borda, saltamos um conjunto inteiro — como as cópias são
-// idênticas, o salto é invisível.
-const FAIXA = [...UNIVERSIDADES, ...UNIVERSIDADES, ...UNIVERSIDADES]
-
 // 45% no mobile de propósito: o terceiro logo fica cortado na borda e denuncia
 // que a faixa rola de lado, já que a barra de rolagem fica escondida.
 // Até 425px cai para 82%: um logo por vez, com uma fatia do próximo aparecendo.
 const SLIDE =
-  'flex shrink-0 basis-[82%] snap-start items-center justify-center px-3 py-4 min-[426px]:basis-[45%] sm:basis-1/3 sm:px-4 sm:py-6 lg:basis-1/4 lg:px-6 xl:basis-1/5'
+  'flex shrink-0 basis-[82%] snap-start items-center justify-center px-3 py-4 min-[426px]:basis-[45%] sm:basis-1/3 sm:px-4 sm:py-6 lg:px-6 lg:basis-1/4'
 
 const SETA =
   'flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-blue transition-colors hover:bg-blue/10'
 
-const AUTOPLAY_MS = 5000
-
 export default function UniversidadesParceiras() {
   const faixaRef = useRef<HTMLUListElement>(null)
   const reduzirMovimento = useReducedMotion()
-  const pausadoRef = useRef(false)
-
-  // Mantém a rolagem dentro da cópia do meio para haver folga dos dois lados.
-  const normalizar = useCallback(() => {
-    const faixa = faixaRef.current
-    if (!faixa) return
-    const conjunto = faixa.scrollWidth / 3
-    if (faixa.scrollLeft < conjunto) faixa.scrollLeft += conjunto
-    else if (faixa.scrollLeft >= conjunto * 2) faixa.scrollLeft -= conjunto
-  }, [])
-
-  useEffect(() => {
-    const faixa = faixaRef.current
-    if (!faixa) return
-    faixa.scrollLeft = faixa.scrollWidth / 3
-    // scrollend dispara depois que a rolagem (suave ou não) assenta: o salto de
-    // um conjunto acontece em repouso, então fica imperceptível.
-    faixa.addEventListener('scrollend', normalizar)
-    return () => faixa.removeEventListener('scrollend', normalizar)
-  }, [normalizar])
 
   const rolar = useCallback(
     (direcao: -1 | 1) => {
       const faixa = faixaRef.current
       if (!faixa) return
-      // 90% da largura visível: sobra um logo em comum entre uma página e outra.
+      // Largura visível inteira: as páginas não se sobrepõem, então os logos
+      // restantes aparecem separados dos que já foram vistos.
       faixa.scrollBy({
-        left: direcao * faixa.clientWidth * 0.9,
+        left: direcao * faixa.clientWidth,
         behavior: reduzirMovimento ? 'auto' : 'smooth',
       })
     },
     [reduzirMovimento]
   )
-
-  useEffect(() => {
-    if (reduzirMovimento) return
-    const id = setInterval(() => {
-      if (!pausadoRef.current && !document.hidden) rolar(1)
-    }, AUTOPLAY_MS)
-    return () => clearInterval(id)
-  }, [reduzirMovimento, rolar])
 
   return (
     <section
@@ -109,13 +75,7 @@ export default function UniversidadesParceiras() {
         Universidades Parceiras
       </Heading>
 
-      <div
-        className="flex items-center gap-1 sm:gap-3"
-        onMouseEnter={() => (pausadoRef.current = true)}
-        onMouseLeave={() => (pausadoRef.current = false)}
-        onFocusCapture={() => (pausadoRef.current = true)}
-        onBlurCapture={() => (pausadoRef.current = false)}
-      >
+      <div className="flex items-center gap-1 sm:gap-3">
         <button
           type="button"
           onClick={() => rolar(-1)}
@@ -131,7 +91,7 @@ export default function UniversidadesParceiras() {
           aria-label="Universidades parceiras do Núcleo Bauru"
           className="flex flex-1 snap-x snap-mandatory [scrollbar-width:none] overflow-x-auto [&::-webkit-scrollbar]:hidden"
         >
-          {FAIXA.map(({ nome, logo }, i) => (
+          {UNIVERSIDADES.map(({ nome, logo }, i) => (
             <li key={`${logo}-${i}`} className={SLIDE}>
               <div className="relative h-24 w-full sm:h-28 lg:h-32">
                 <Image
@@ -144,6 +104,11 @@ export default function UniversidadesParceiras() {
               </div>
             </li>
           ))}
+          {/* Espaçador que completa a última página: sem ele o navegador trava a
+              rolagem no fim do conteúdo e repete os logos em vez de mostrar
+              espaço em branco. 7 logos → sobram 2 vãos no sm (3/pág) e 1 no lg
+              (4/pág). Abaixo de sm a faixa já mostra logos cortados de propósito. */}
+          <li aria-hidden="true" className="shrink-0 basis-0 sm:basis-2/3 lg:basis-1/4" />
         </ul>
 
         <button
