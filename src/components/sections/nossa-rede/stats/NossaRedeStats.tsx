@@ -56,7 +56,12 @@ export default function NossaRedeStats({ ejs }: { ejs: Ej[] }) {
     return [
       { valor: totalEjs, sufixo: '', rotulo: 'Empresas Juniores', icone: ICONE_FOGUETE },
       { valor: totalCidades, sufixo: '', rotulo: 'Cidades', icone: ICONE_LOCAL },
-      { valor: totalIes, sufixo: '', rotulo: 'IES', icone: ICONE_PREDIOS },
+      {
+        valor: totalIes,
+        sufixo: '',
+        rotulo: 'Instituições de Ensino',
+        icone: ICONE_PREDIOS,
+      },
       { valor: 700, sufixo: '+', rotulo: 'Universitários', icone: ICONE_PESSOAS },
     ]
   }, [ejs])
