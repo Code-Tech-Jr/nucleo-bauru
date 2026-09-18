@@ -1,9 +1,8 @@
 'use client'
 
-import { useCallback, useRef } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useReducedMotion } from 'motion/react'
 import Heading from '@/components/ui/Heading'
 
 // As logos saíram do Canva com fundo branco; as versões em
@@ -26,12 +25,12 @@ const UNIVERSIDADES = [
     logo: '/parceiros/universidades/fatec.png',
   },
   {
-    nome: 'Famema — Faculdade de Medicina de Marília',
-    logo: '/parceiros/universidades/famema.png',
-  },
-  {
     nome: 'Unoeste — Universidade do Oeste Paulista',
     logo: '/parceiros/universidades/unoeste.png',
+  },
+  {
+    nome: 'Famema — Faculdade de Medicina de Marília',
+    logo: '/parceiros/universidades/famema.png',
   },
   {
     nome: 'Unisagrado — Universidade do Sagrado Coração',
@@ -39,32 +38,44 @@ const UNIVERSIDADES = [
   },
 ]
 
-// 45% no mobile de propósito: o terceiro logo fica cortado na borda e denuncia
-// que a faixa rola de lado, já que a barra de rolagem fica escondida.
-// Até 425px cai para 82%: um logo por vez, com uma fatia do próximo aparecendo.
-const SLIDE =
-  'flex shrink-0 basis-[82%] snap-start items-center justify-center px-3 py-4 min-[426px]:basis-[45%] sm:basis-1/3 sm:px-4 sm:py-6 lg:px-6 lg:basis-1/4'
-
 const SETA =
   'flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-blue transition-colors hover:bg-blue/10'
 
-export default function UniversidadesParceiras() {
-  const faixaRef = useRef<HTMLUListElement>(null)
-  const reduzirMovimento = useReducedMotion()
+// Quantos logos cabem por página em cada faixa de largura. 4 no desktop
+// (mantém as 4 institucionais + 3 de Marília), e vai caindo pra caber.
+function logosPorPagina(largura: number) {
+  if (largura >= 1024) return 4
+  if (largura >= 640) return 3
+  if (largura >= 426) return 2
+  return 1
+}
 
-  const rolar = useCallback(
-    (direcao: -1 | 1) => {
-      const faixa = faixaRef.current
-      if (!faixa) return
-      // Largura visível inteira: as páginas não se sobrepõem, então os logos
-      // restantes aparecem separados dos que já foram vistos.
-      faixa.scrollBy({
-        left: direcao * faixa.clientWidth,
-        behavior: reduzirMovimento ? 'auto' : 'smooth',
-      })
-    },
-    [reduzirMovimento]
-  )
+function dividir<T>(itens: T[], tamanho: number): T[][] {
+  const paginas: T[][] = []
+  for (let i = 0; i < itens.length; i += tamanho)
+    paginas.push(itens.slice(i, i + tamanho))
+  return paginas
+}
+
+export default function UniversidadesParceiras() {
+  const [porPagina, setPorPagina] = useState(4)
+  const [pagina, setPagina] = useState(0)
+
+  useEffect(() => {
+    const calcular = () => setPorPagina(logosPorPagina(window.innerWidth))
+    calcular()
+    window.addEventListener('resize', calcular)
+    return () => window.removeEventListener('resize', calcular)
+  }, [])
+
+  const paginas = useMemo(() => dividir(UNIVERSIDADES, porPagina), [porPagina])
+
+  // Clamp no render: se um resize reduziu o nº de páginas, o índice guardado
+  // pode apontar pra fora — corrige aqui em vez de num effect (sem re-render).
+  const atual = Math.min(pagina, paginas.length - 1)
+
+  const mover = (direcao: -1 | 1) =>
+    setPagina((atual + direcao + paginas.length) % paginas.length)
 
   return (
     <section
@@ -78,42 +89,48 @@ export default function UniversidadesParceiras() {
       <div className="flex items-center gap-1 sm:gap-3">
         <button
           type="button"
-          onClick={() => rolar(-1)}
+          onClick={() => mover(-1)}
           aria-label="Ver universidades anteriores"
           className={SETA}
         >
           <ChevronLeft className="size-5" aria-hidden="true" />
         </button>
 
-        <ul
-          ref={faixaRef}
-          tabIndex={0}
+        <div
           aria-label="Universidades parceiras do Núcleo Bauru"
-          className="flex flex-1 snap-x snap-mandatory [scrollbar-width:none] overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          className="flex-1 overflow-hidden"
         >
-          {UNIVERSIDADES.map(({ nome, logo }, i) => (
-            <li key={`${logo}-${i}`} className={SLIDE}>
-              <div className="relative h-24 w-full sm:h-28 lg:h-32">
-                <Image
-                  src={logo}
-                  alt={nome}
-                  fill
-                  sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 23vw, (min-width: 640px) 30vw, (min-width: 426px) 42vw, 82vw"
-                  className="object-contain"
-                />
-              </div>
-            </li>
-          ))}
-          {/* Espaçador que completa a última página: sem ele o navegador trava a
-              rolagem no fim do conteúdo e repete os logos em vez de mostrar
-              espaço em branco. 7 logos → sobram 2 vãos no sm (3/pág) e 1 no lg
-              (4/pág). Abaixo de sm a faixa já mostra logos cortados de propósito. */}
-          <li aria-hidden="true" className="shrink-0 basis-0 sm:basis-2/3 lg:basis-1/4" />
-        </ul>
+          <div
+            className="flex transition-transform duration-500 ease-in-out motion-reduce:transition-none"
+            style={{ transform: `translateX(-${atual * 100}%)` }}
+          >
+            {paginas.map((grupo, i) => (
+              <ul
+                key={i}
+                aria-hidden={i !== atual}
+                className="flex w-full shrink-0 items-center justify-center gap-4 px-2 sm:gap-8 sm:px-4"
+              >
+                {grupo.map(({ nome, logo }) => (
+                  <li key={logo} className="flex flex-1 justify-center">
+                    <div className="relative h-24 w-full sm:h-28 lg:h-32">
+                      <Image
+                        src={logo}
+                        alt={nome}
+                        fill
+                        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 30vw, (min-width: 426px) 45vw, 90vw"
+                        className="object-contain"
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
 
         <button
           type="button"
-          onClick={() => rolar(1)}
+          onClick={() => mover(1)}
           aria-label="Ver próximas universidades"
           className={SETA}
         >
